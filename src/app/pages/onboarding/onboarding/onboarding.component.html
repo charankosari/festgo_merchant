@@ -1,0 +1,24 @@
+<app-layout pageTitle="Hotel" pageStatus="IN PROGRESS" activeMenuItem="properties">
+  <!-- Progress Steps -->
+  <div class="progress-steps">
+    <div 
+      *ngFor="let step of steps; let i = index" 
+      class="step" 
+      [class.active]="step.active" 
+      [class.completed]="step.completed"
+      (click)="navigateToStep(step.id)"
+    >
+      <div class="step-indicator">
+        <div class="step-number" *ngIf="!step.completed">{{i + 1}}</div>
+        <i class="pi pi-check step-check" *ngIf="step.completed"></i>
+      </div>
+      <div class="step-label">{{step.label}}</div>
+      <div class="step-connector" *ngIf="i < steps.length - 1"></div>
+    </div>
+  </div>
+
+  <!-- Onboarding Content -->
+  <div class="onboarding-content">
+    <router-outlet></router-outlet>
+  </div>
+</app-layout>

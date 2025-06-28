@@ -1,0 +1,119 @@
+<app-layout pageTitle="White Label Configuration" activeMenuItem="admin">
+  <div class="white-label-container">
+    <div class="config-header">
+      <h1>White Label Configuration</h1>
+      <p>Customize the appearance of the application to match your brand.</p>
+    </div>
+    
+    <div class="config-card">
+      <form [formGroup]="configForm" (ngSubmit)="onSubmit()" class="config-form">
+        <div class="form-section">
+          <h2>Brand Colors</h2>
+          
+          <div class="color-grid">
+            <div class="form-field">
+              <label for="primaryColor">Primary Color</label>
+              <div class="color-input-container">
+                <input type="color" id="primaryColor" formControlName="primaryColor" class="color-picker">
+                <input type="text" formControlName="primaryColor" class="color-text" placeholder="#f05a29">
+              </div>
+              <small *ngIf="configForm.get('primaryColor')?.invalid && configForm.get('primaryColor')?.touched" class="error-message">
+                Please enter a valid hex color code (e.g., #f05a29)
+              </small>
+            </div>
+            
+            <div class="form-field">
+              <label for="secondaryColor">Secondary Color</label>
+              <div class="color-input-container">
+                <input type="color" id="secondaryColor" formControlName="secondaryColor" class="color-picker">
+                <input type="text" formControlName="secondaryColor" class="color-text" placeholder="#4a4a4a">
+              </div>
+              <small *ngIf="configForm.get('secondaryColor')?.invalid && configForm.get('secondaryColor')?.touched" class="error-message">
+                Please enter a valid hex color code (e.g., #4a4a4a)
+              </small>
+            </div>
+            
+            <div class="form-field">
+              <label for="accentColor">Accent Color</label>
+              <div class="color-input-container">
+                <input type="color" id="accentColor" formControlName="accentColor" class="color-picker">
+                <input type="text" formControlName="accentColor" class="color-text" placeholder="#304c8e">
+              </div>
+              <small *ngIf="configForm.get('accentColor')?.invalid && configForm.get('accentColor')?.touched" class="error-message">
+                Please enter a valid hex color code (e.g., #304c8e)
+              </small>
+            </div>
+            
+            <div class="form-field">
+              <label for="loginBackgroundColor">Login Background Color</label>
+              <div class="color-input-container">
+                <input type="color" id="loginBackgroundColor" formControlName="loginBackgroundColor" class="color-picker">
+                <input type="text" formControlName="loginBackgroundColor" class="color-text" placeholder="#0a2647">
+              </div>
+              <small *ngIf="configForm.get('loginBackgroundColor')?.invalid && configForm.get('loginBackgroundColor')?.touched" class="error-message">
+                Please enter a valid hex color code (e.g., #0a2647)
+              </small>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-section">
+          <h2>Logo Configuration</h2>
+          
+          <div class="form-field">
+            <label>Logo Type</label>
+            <div class="radio-group">
+              <div class="radio-option">
+                <input type="radio" id="logoTypeDefault" value="default" formControlName="logoType" class="radio-input">
+                <label for="logoTypeDefault" class="radio-label">Default Logo</label>
+              </div>
+              <div class="radio-option">
+                <input type="radio" id="logoTypeCustom" value="custom" formControlName="logoType" class="radio-input">
+                <label for="logoTypeCustom" class="radio-label">Custom Logo</label>
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-field" *ngIf="configForm.get('logoType')?.value === 'default'">
+            <label for="logoText">Logo Text</label>
+            <input type="text" id="logoText" formControlName="logoText" class="form-input" placeholder="connect">
+            <small *ngIf="configForm.get('logoText')?.invalid && configForm.get('logoText')?.touched" class="error-message">
+              Logo text is required
+            </small>
+          </div>
+          
+          <div class="form-field" *ngIf="configForm.get('logoType')?.value === 'custom'">
+            <label for="logoUrl">Logo URL</label>
+            <input type="text" id="logoUrl" formControlName="logoUrl" class="form-input" placeholder="https://example.com/logo.png">
+            <small *ngIf="configForm.get('logoUrl')?.invalid && configForm.get('logoUrl')?.touched" class="error-message">
+              Logo URL is required
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="companyName">Company Name</label>
+            <input type="text" id="companyName" formControlName="companyName" class="form-input" placeholder="MaterialM">
+            <small *ngIf="configForm.get('companyName')?.invalid && configForm.get('companyName')?.touched" class="error-message">
+              Company name is required
+            </small>
+          </div>
+          
+          <div class="logo-preview" *ngIf="configForm.get('logoType')?.value === 'custom' && configForm.get('logoUrl')?.value">
+            <h3>Logo Preview</h3>
+            <div class="preview-container">
+              <img [src]="previewLogo()" alt="Logo preview" class="preview-image">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="resetToDefault()">Reset to Default</button>
+          <button type="submit" class="btn btn-primary" [disabled]="configForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Save Changes</span>
+            <span *ngIf="isSubmitting">Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-layout>

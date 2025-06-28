@@ -1,0 +1,53 @@
+<app-layout pageTitle="List New Property" activeMenuItem="properties">
+  <div class="property-type-selection">
+    <h1 class="page-title">Which property type would you like to list?</h1>
+    <p class="page-subtitle">Please select your property type from below options</p>
+
+    <!-- Property Type Selection -->
+    <div class="selection-container">
+      <div *ngFor="let propertyType of propertyTypes" 
+           class="selection-card" 
+           [class.selected]="propertyType.selected"
+           (click)="selectPropertyType(propertyType)">
+        <div class="selection-content">
+          <h2>{{propertyType.name}}</h2>
+          <p>{{propertyType.description}}</p>
+        </div>
+        <div class="selection-check" *ngIf="propertyType.selected">
+          <i class="pi pi-check-circle"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hotel Type Selection (only shown if Hotel is selected) -->
+    <div *ngIf="getSelectedPropertyType()?.id === 'hotel'" class="hotel-type-section">
+      <h2 class="section-title">Type of Hotel</h2>
+      
+      <div class="hotel-types-grid">
+        <div *ngFor="let hotelType of hotelTypes" 
+             class="hotel-type-card" 
+             [class.selected]="hotelType.selected"
+             (click)="selectHotelType(hotelType)">
+          <div class="hotel-image">
+            <img [src]="hotelType.image" [alt]="hotelType.name">
+          </div>
+          <div class="hotel-content">
+            <h3>{{hotelType.name}}</h3>
+            <p>{{hotelType.description}}</p>
+          </div>
+          <div class="selection-check-additional" *ngIf="hotelType.selected">
+            <i class="pi pi-check-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button class="btn-cancel" (click)="onCancel()">Cancel</button>
+      <button class="btn-primary" (click)="onListProperty()" [disabled]="!getSelectedHotelType()">
+        List Property
+      </button>
+    </div>
+  </div>
+</app-layout>

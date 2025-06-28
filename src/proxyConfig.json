@@ -1,0 +1,11 @@
+{
+  "/portalApi": {
+    "target": "https://book.festgo.in/festgo/web/v1/",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/portalApi": ""
+    }
+  },
+  "/paymentapi": {}
+}

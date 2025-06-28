@@ -1,0 +1,132 @@
+<div class="app-layout-container" [ngClass]="themeService.isDarkTheme ? 'dark-theme' : 'light-theme'">
+  <!-- Top Navigation Bar -->
+  <header class="top-nav shadow-sm rounded">
+    <div class="logo-container">
+      <img class="logo" src="../../../../assets/small-logo.jpeg" alt="">
+      <span class="logo-text">FestGo</span>
+    </div>
+    
+    <div class="page-info" *ngIf="pageTitle">
+      <span class="page-type">{{pageTitle}}</span>
+      <span class="page-status" *ngIf="pageStatus">{{pageStatus}}</span>
+    </div>
+    
+    <div class="user-profile" (click)="toggleProfileMenu($event)">
+      <div class="user-avatar">C</div>
+      <span class="user-name">Hi, {{userName}}</span>
+      <i class="pi pi-chevron-down"></i>
+      
+      <!-- Profile Dropdown Menu -->
+      <div class="profile-dropdown" *ngIf="showProfileMenu">
+        <div class="profile-header" (click)="navigateToProfile()">
+          <div class="profile-avatar">
+            <i class="pi pi-user"></i>
+          </div>
+          <div class="profile-info">
+            <h3 class="profile-name">{{userName}}</h3>
+            <p class="profile-title">{{role}}</p>
+          </div>
+          <i class="pi pi-chevron-right"></i>
+        </div>
+        
+        <div class="dropdown-divider"></div>
+        
+        <div class="dropdown-item" (click)="changePassword()">
+          <span>Change password</span>
+          <i class="pi pi-chevron-right"></i>
+        </div>
+        
+        <div class="dropdown-divider"></div>
+        
+        <div class="dropdown-item logout" (click)="logout()">
+          <span>LOGOUT</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-content">
+    <!-- Left Sidebar -->
+    <aside class="vertical-sidebar shadow bg-white rounded">
+      <div class="sidebar-item" [class.active]="activeMenuItem === 'properties'">
+        <div class="sidebar-icon">
+          <i class="pi pi-home"></i>
+        </div>
+        <span class="sidebar-text">My Properties</span>
+      </div>
+      <div class="sidebar-item" [class.active]="activeMenuItem === 'chat'">
+        <div class="sidebar-icon">
+          <i class="pi pi-comments"></i>
+        </div>
+        <span class="sidebar-text">Group Chat</span>
+      </div>
+      <div class="sidebar-item" [class.active]="activeMenuItem === 'team'">
+        <div class="sidebar-icon">
+          <i class="pi pi-users"></i>
+        </div>
+        <span class="sidebar-text">My Team</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <ng-content></ng-content>
+    </main>
+  </div>
+
+  <!-- Change Password Dialog -->
+  <p-dialog 
+    [(visible)]="showChangePasswordDialog" 
+    [modal]="true" 
+    [draggable]="false" 
+    [resizable]="false"
+    [style]="{width: '400px'}"
+    header="Change Password"
+    [closeOnEscape]="true"
+    [blockScroll]="true"
+    [contentStyle]="themeService.isDarkTheme ? {'background-color': '#1e1e1e', 'color': '#f8f9fa'} : {}"
+    styleClass="{{themeService.isDarkTheme ? 'dark-dialog' : ''}}"
+    >
+    <form [formGroup]="changePasswordForm" (ngSubmit)="onChangePasswordSubmit()">
+      <div class="change-password-content">
+        <div class="form-field">
+          <label for="currentPassword">Current Password</label>
+          <input id="currentPassword" type="password" formControlName="currentPassword" 
+                [ngClass]="{'invalid': changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched}">
+          <small *ngIf="changePasswordForm.get('currentPassword')?.invalid && changePasswordForm.get('currentPassword')?.touched" class="error-message">
+            Current password is required
+          </small>
+        </div>
+        
+        <div class="form-field">
+          <label for="newPassword">New Password</label>
+          <input id="newPassword" type="password" formControlName="newPassword" 
+                [ngClass]="{'invalid': changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched}">
+          <small *ngIf="changePasswordForm.get('newPassword')?.invalid && changePasswordForm.get('newPassword')?.touched" class="error-message">
+            New password must be at least 8 characters
+          </small>
+        </div>
+        
+        <div class="form-field">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input id="confirmPassword" type="password" formControlName="confirmPassword" 
+                [ngClass]="{'invalid': changePasswordForm.get('confirmPassword')?.invalid && changePasswordForm.get('confirmPassword')?.touched}">
+          <small *ngIf="changePasswordForm.get('confirmPassword')?.hasError('passwordMismatch')" class="error-message">
+            Passwords do not match
+          </small>
+        </div>
+        
+        <div class="dialog-actions">
+          <button type="button" class="btn btn-outline" (click)="showChangePasswordDialog = false">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="changePasswordForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Change Password</span>
+            <span *ngIf="isSubmitting">Changing...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </p-dialog>
+
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+</div>

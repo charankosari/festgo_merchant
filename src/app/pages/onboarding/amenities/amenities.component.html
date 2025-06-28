@@ -1,0 +1,124 @@
+<div class="amenities-container">
+  <div class="form-header">
+    <h2 class="section-title">Property Amenities</h2>
+    <p class="section-subtitle">Select the amenities available at your property and configure their details.</p>
+  </div>
+
+  <form [formGroup]="amenitiesForm" (ngSubmit)="onSubmit()">
+    <div class="sub-section-title">
+      <h3 class="section-title">All Amenities</h3>
+      <p class="section-subtitle">Answering the amenities available at your property can significantly influence guests to book! </p>
+    </div>
+    <div class="amenities-layout">
+      <!-- Categories Sidebar -->
+      <div class="categories-sidebar">
+        <div class="categories-list">
+          <div *ngFor="let category of categories" 
+               class="category-item" 
+               [class.active]="activeCategory === category.name"
+               (click)="setActiveCategory(category.name)">
+            <span class="category-name">{{ category.name }} ({{ getSelectedAmenitiesCount(category.name) }})</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Amenities Content -->
+      <div class="amenities-content" formArrayName="amenities">
+        <ng-container *ngIf="getActiveCategory() as activeCategory">
+          <div class="amenities-list">
+            <ng-container *ngFor="let amenity of activeCategory.amenities; let i = index">
+              <ng-container *ngIf="getAmenityFormControl(amenity.amenity_id) as formControl" [formGroup]="formControl">
+                <div class="amenity-row">
+                  <!-- Amenity Name and Yes/No Options -->
+                  <div class="amenity-header">
+                    <span class="amenity-name">{{ amenity.amenity_name }}</span>
+                    <div class="yes-no-options">
+                      <div class="radio-option">
+                        <input 
+                          type="radio" 
+                          [id]="'no_' + amenity.amenity_id"
+                          [value]="'false'"
+                          formControlName="is_selected">
+                        <label [for]="'no_' + amenity.amenity_id" class="option-label">No</label>
+                      </div>
+                      
+                      <div class="radio-option">
+                        <input 
+                          type="radio" 
+                          [id]="'yes_' + amenity.amenity_id"
+                          [value]="'true'"
+                          formControlName="is_selected">
+                        <label [for]="'yes_' + amenity.amenity_id" class="option-label">Yes</label>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Configuration Dropdowns (shown when Yes is selected) -->
+                  <div class="amenity-config" *ngIf="formControl.get('is_selected')?.value === 'true' && amenity.template?.attributes">
+                    <div formGroupName="selected_sub_attributes">
+                      
+                      <!-- Main Attribute Dropdown (for radio type templates) -->
+                      <ng-container *ngIf="amenity.template.type === 'radio'">
+                        <div class="config-row">
+                          <p-dropdown 
+                            [options]="getMainAttributeOptions(amenity)"
+                            optionLabel="label"
+                            optionValue="value"
+                            [placeholder]="'Select option'"
+                            formControlName="main_attribute"
+                            class="config-dropdown">
+                          </p-dropdown>
+                        </div>
+                        
+                        <!-- Sub-attribute dropdown (shown when main attribute is selected) -->
+                        <div class="config-row" *ngIf="getSelectedMainAttribute(amenity, formControl) as selectedAttr">
+                          <ng-container *ngIf="selectedAttr.sub_template?.sub_attributes">
+                            <p-dropdown 
+                              [options]="getSubAttributeOptions(selectedAttr)"
+                              optionLabel="label"
+                              optionValue="value"
+                              [placeholder]="'Select ' + selectedAttr.attribute_name.toLowerCase()"
+                              [formControlName]="'sub_attribute_' + selectedAttr.attribute_id"
+                              class="config-dropdown">
+                            </p-dropdown>
+                          </ng-container>
+                        </div>
+                      </ng-container>
+
+                      <!-- Multiple Attribute Dropdowns (for checkbox type templates) -->
+                      <ng-container *ngIf="amenity.template.type === 'checkbox'">
+                        <div class="config-row">
+                          <p-multiSelect 
+                            [options]="getCheckboxAttributeOptions(amenity)"
+                            optionLabel="label"
+                            optionValue="value"
+                            [placeholder]="'Select options'"
+                            formControlName="checkbox_attributes"
+                            class="config-dropdown">
+                          </p-multiSelect>
+                        </div>
+                      </ng-container>
+
+                    </div>
+                  </div>
+                </div>
+              </ng-container>
+            </ng-container>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-back" (click)="onBack()">
+        <i class="pi pi-arrow-left"></i> Back
+      </button>
+      <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting" (click)="onSubmit()">Save And Continue</span>
+        <span *ngIf="isSubmitting">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>
+
+
+

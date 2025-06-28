@@ -1,0 +1,30 @@
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  
+  &.light-theme {
+    background-color: #f8f9fa;
+    color: #212529;
+  }
+  
+  &.dark-theme {
+    background-color: #121212;
+    color: #f8f9fa;
+  }
+}
+
+.theme-toggle-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 1rem;
+}
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 1rem;
+}

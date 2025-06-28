@@ -1,0 +1,94 @@
+<div class="create-room-container">
+    <!-- Header -->
+    <div class="header">
+      <h1 class="title">Create Room</h1>
+      <button 
+        type="button" 
+        class="btn btn-primary create-btn"
+        (click)="addNewRoom()"
+        [disabled]="showCreateForm">
+        <i class="pi pi-plus"></i>
+        Create New Room
+      </button>
+    </div>
+  
+    <!-- Created Rooms List -->
+    <div class="created-rooms" *ngIf="createdRooms.length > 0 && showCreateForm == false">
+      <div class="section-header">
+        <span class="section-title">CREATED ({{ createdRooms.length }})</span>
+      </div>
+      
+      <div class="rooms-list">
+        <div 
+          *ngFor="let room of createdRooms; let i = index" 
+          class="room-item">
+          <div class="room-info">
+            <h3 class="room-name">{{ room.get('name')?.value }}</h3>
+            <div class="room-details">
+              <span class="room-type">{{ getRoomTypeLabel(room.get('type')?.value) }}</span>
+              <span class="room-capacity">{{ room.get('capacity')?.value }} guests</span>
+              <span class="room-price mt-1">${{ room.get('price')?.value }}/night</span>
+            </div>
+          </div>
+          <div class="room-actions">
+            <button 
+              type="button" 
+              class="btn btn-link edit-btn"
+              (click)="editRoom(i)"
+              [disabled]="showCreateForm">
+              Edit Room
+            </button>
+            <button 
+              type="button" 
+              class="btn btn-link delete-btn"
+              (click)="deleteRoom(i)"
+              [disabled]="showCreateForm">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Create/Edit Room Form -->
+    <div class="room-form-container" *ngIf="showCreateForm">
+      <!-- <app-room-form
+        [roomData]="editingIndex !== null ? getRoomData(editingIndex) : null"
+        [roomTypes]="roomTypes"
+        [amenitiesList]="amenitiesList"
+        (save)="saveRoom($event)"
+        (cancel)="cancelRoomForm()">
+      </app-room-form> -->
+      <app-create-room></app-create-room>
+    </div>
+  
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="createdRooms.length === 0 && !showCreateForm">
+      <div class="empty-content">
+        <i class="pi pi-home empty-icon"></i>
+        <h3>No rooms created yet</h3>
+        <p>Start by creating your first room</p>
+        <button 
+          type="button" 
+          class="btn btn-primary"
+          (click)="addNewRoom()">
+          <i class="pi pi-plus"></i>
+          Create Your First Room
+        </button>
+      </div>
+    </div>
+  
+    <!-- Action Buttons -->
+    <div class="form-actions" *ngIf="showCreateForm == false">
+        <button type="button" class="btn-back" (click)="onBack()">
+          <i class="pi pi-arrow-left"></i> Back
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting">
+          <span *ngIf="!isSubmitting" (click)="onSubmit()">Save And Continue</span>
+          <span *ngIf="isSubmitting">Saving...</span>
+        </button>
+    </div>
+
+    
+  </div>
+  

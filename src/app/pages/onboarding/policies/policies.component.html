@@ -1,0 +1,680 @@
+<div class="policies-container">
+  <div class="policies-header">
+    <h2>Policies</h2>
+    <p>Mention all the policies applicable at your property.</p>
+    
+    <!-- Form validation summary -->
+    <div class="validation-summary" *ngIf="hasFormErrors">
+      <div class="validation-alert">
+        <i class="pi pi-exclamation-triangle"></i>
+        <span>Please fix {{ formErrorCount }} error(s) before continuing</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="policies-content" *ngIf="!isLoading">
+    <form [formGroup]="policiesForm" (ngSubmit)="onSubmit()">
+      
+      <!-- Check-in & Check-out Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-clock"></i> Check-in & Check-out Times</h3>
+          <p>Set your property's check-in and check-out times</p>
+        </div>
+        
+        <div class="form-grid two-column">
+          <div class="form-group">
+            <label for="checkInTime">Check-in Time <span class="required">*</span></label>
+            <p-dropdown
+              id="checkInTime"
+              formControlName="checkInTime"
+              [options]="timeOptions"
+              placeholder="Select check-in time"
+              [class.p-invalid]="isFieldInvalid('checkInTime')"
+              [class.p-valid]="isFieldValid('checkInTime')">
+            </p-dropdown>
+            <small class="help-text">When can guests check in?</small>
+            <small class="error-message" *ngIf="isFieldInvalid('checkInTime')">
+              {{ getFieldError('checkInTime') }}
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="checkOutTime">Check-out Time <span class="required">*</span></label>
+            <p-dropdown
+              id="checkOutTime"
+              formControlName="checkOutTime"
+              [options]="timeOptions"
+              placeholder="Select check-out time"
+              [class.p-invalid]="isFieldInvalid('checkOutTime')"
+              [class.p-valid]="isFieldValid('checkOutTime')">
+            </p-dropdown>
+            <small class="help-text">When must guests check out?</small>
+            <small class="error-message" *ngIf="isFieldInvalid('checkOutTime')">
+              {{ getFieldError('checkOutTime') }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stay Duration Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-calendar"></i> Stay Duration Limits</h3>
+          <p>Set minimum and maximum stay requirements</p>
+        </div>
+        
+        <div class="form-grid three-column">
+          <div class="form-group">
+            <label for="minimumStay">Minimum Stay (nights) <span class="required">*</span></label>
+            <p-inputNumber
+              id="minimumStay"
+              formControlName="minimumStay"
+              [min]="1"
+              [max]="365"
+              [showButtons]="true"
+              placeholder="1"
+              [class.p-invalid]="isFieldInvalid('minimumStay')"
+              [class.p-valid]="isFieldValid('minimumStay')">
+            </p-inputNumber>
+            <small class="help-text">Minimum nights guests must book</small>
+            <small class="error-message" *ngIf="isFieldInvalid('minimumStay')">
+              {{ getFieldError('minimumStay') }}
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="maximumStay">Maximum Stay (nights) <span class="required">*</span></label>
+            <p-inputNumber
+              id="maximumStay"
+              formControlName="maximumStay"
+              [min]="minimumStayValue"
+              [max]="365"
+              [showButtons]="true"
+              placeholder="30"
+              [class.p-invalid]="isFieldInvalid('maximumStay')"
+              [class.p-valid]="isFieldValid('maximumStay')">
+            </p-inputNumber>
+            <small class="help-text">Maximum nights guests can book</small>
+            <small class="error-message" *ngIf="isFieldInvalid('maximumStay')">
+              {{ getFieldError('maximumStay') }}
+            </small>
+          </div>
+          
+          <div class="form-group">
+            <label for="advanceBookingDays">Advance Booking (days) <span class="required">*</span></label>
+            <p-inputNumber
+              id="advanceBookingDays"
+              formControlName="advanceBookingDays"
+              [min]="0"
+              [max]="730"
+              [showButtons]="true"
+              placeholder="365"
+              [class.p-invalid]="isFieldInvalid('advanceBookingDays')"
+              [class.p-valid]="isFieldValid('advanceBookingDays')">
+            </p-inputNumber>
+            <small class="help-text">How far in advance can guests book?</small>
+            <small class="error-message" *ngIf="isFieldInvalid('advanceBookingDays')">
+              {{ getFieldError('advanceBookingDays') }}
+            </small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Booking Preferences Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-bookmark"></i> Booking Preferences</h3>
+          <p>Configure how guests can book your property</p>
+        </div>
+        
+        <div class="toggle-group">
+          <div class="toggle-item">
+            <p-checkbox
+              formControlName="instantBooking"
+              inputId="instantBooking"
+              [binary]="true">
+            </p-checkbox>
+            <div class="toggle-content">
+              <label for="instantBooking" class="toggle-label">Enable Instant Booking</label>
+              <small class="toggle-description">
+                Guests can book immediately without waiting for your approval. 
+                This can increase your booking rate by up to 30%.
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Policies Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-shield"></i> Property Policies</h3>
+          <p>Set clear policies for smoking, pets, events, and children</p>
+        </div>
+        
+        <div class="form-grid two-column">
+          <div class="form-group">
+            <label for="smokingPolicy">Smoking Policy <span class="required">*</span></label>
+            <p-dropdown
+              id="smokingPolicy"
+              formControlName="smokingPolicy"
+              [options]="smokingPolicyOptions"
+              placeholder="Select smoking policy"
+              [class.p-invalid]="isFieldInvalid('smokingPolicy')"
+              [class.p-valid]="isFieldValid('smokingPolicy')">
+            </p-dropdown>
+            <small class="help-text">What's your smoking policy?</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="petPolicy">Pet Policy <span class="required">*</span></label>
+            <p-dropdown
+              id="petPolicy"
+              formControlName="petPolicy"
+              [options]="petPolicyOptions"
+              placeholder="Select pet policy"
+              [class.p-invalid]="isFieldInvalid('petPolicy')"
+              [class.p-valid]="isFieldValid('petPolicy')">
+            </p-dropdown>
+            <small class="help-text">Are pets allowed?</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="eventPolicy">Events & Parties Policy <span class="required">*</span></label>
+            <p-dropdown
+              id="eventPolicy"
+              formControlName="eventPolicy"
+              [options]="eventPolicyOptions"
+              placeholder="Select event policy"
+              [class.p-invalid]="isFieldInvalid('eventPolicy')"
+              [class.p-valid]="isFieldValid('eventPolicy')">
+            </p-dropdown>
+            <small class="help-text">Are parties or events allowed?</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="childPolicy">Children Policy <span class="required">*</span></label>
+            <p-dropdown
+              id="childPolicy"
+              formControlName="childPolicy"
+              [options]="childPolicyOptions"
+              placeholder="Select children policy"
+              [class.p-invalid]="isFieldInvalid('childPolicy')"
+              [class.p-valid]="isFieldValid('childPolicy')">
+            </p-dropdown>
+            <small class="help-text">Are children welcome?</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Fees & Charges Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-dollar"></i> Additional Fees & Charges</h3>
+          <p>Set additional fees for guests and services</p>
+        </div>
+        
+        <div class="form-grid three-column">
+          <div class="form-group">
+            <label for="additionalGuestFee">Additional Guest Fee (per night)</label>
+            <p-inputNumber
+              id="additionalGuestFee"
+              formControlName="additionalGuestFee"
+              mode="currency"
+              currency="USD"
+              [min]="0"
+              [max]="1000"
+              placeholder="0.00"
+              [class.p-invalid]="isFieldInvalid('additionalGuestFee')"
+              [class.p-valid]="isFieldValid('additionalGuestFee')">
+            </p-inputNumber>
+            <small class="help-text">Fee for each additional guest beyond base occupancy</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="securityDeposit">Security Deposit</label>
+            <p-inputNumber
+              id="securityDeposit"
+              formControlName="securityDeposit"
+              mode="currency"
+              currency="USD"
+              [min]="0"
+              [max]="10000"
+              placeholder="0.00"
+              [class.p-invalid]="isFieldInvalid('securityDeposit')"
+              [class.p-valid]="isFieldValid('securityDeposit')">
+            </p-inputNumber>
+            <small class="help-text">Refundable deposit held during the stay</small>
+          </div>
+          
+          <div class="form-group">
+            <label for="cleaningFee">Cleaning Fee</label>
+            <p-inputNumber
+              id="cleaningFee"
+              formControlName="cleaningFee"
+              mode="currency"
+              currency="USD"
+              [min]="0"
+              [max]="1000"
+              placeholder="0.00"
+              [class.p-invalid]="isFieldInvalid('cleaningFee')"
+              [class.p-valid]="isFieldValid('cleaningFee')">
+            </p-inputNumber>
+            <small class="help-text">One-time cleaning fee per booking</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancellation Policy Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-times-circle"></i> Cancellation Policy</h3>
+          <p>Choose your cancellation policy to balance flexibility with protection</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="cancellationPolicy">Cancellation Policy <span class="required">*</span></label>
+          <p-dropdown
+            id="cancellationPolicy"
+            formControlName="cancellationPolicy"
+            [options]="cancellationPolicyOptions"
+            placeholder="Select cancellation policy"
+            [class.p-invalid]="isFieldInvalid('cancellationPolicy')"
+            [class.p-valid]="isFieldValid('cancellationPolicy')">
+          </p-dropdown>
+          <small class="help-text">Choose the policy that works best for your property</small>
+          <small class="error-message" *ngIf="isFieldInvalid('cancellationPolicy')">
+            {{ getFieldError('cancellationPolicy') }}
+          </small>
+        </div>
+      </div>
+
+      <!-- House Rules Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-list"></i> House Rules</h3>
+          <p>Set clear expectations for your guests</p>
+        </div>
+        
+        <div class="form-group">
+          <label for="houseRules">Standard House Rules</label>
+          <p-multiSelect
+            id="houseRules"
+            formControlName="houseRules"
+            [options]="predefinedHouseRules"
+            placeholder="Select applicable house rules"
+            [showToggleAll]="true"
+            [showHeader]="true"
+            selectedItemsLabel="{0} rules selected">
+          </p-multiSelect>
+          <small class="help-text">Select all rules that apply to your property</small>
+        </div>
+
+        <!-- Custom Rules -->
+        <div class="custom-rules-section">
+          <div class="custom-rules-header">
+            <label>Custom House Rules</label>
+            <button type="button" class="add-rule-btn" (click)="addCustomRule()">
+              <i class="pi pi-plus"></i> Add Custom Rule
+            </button>
+          </div>
+          
+          <div formArrayName="customRules" class="custom-rules-list">
+            <div *ngFor="let rule of customRulesArray.controls; let i = index" class="custom-rule-item">
+              <div class="rule-input-group">
+                <input
+                  type="text"
+                  [formControlName]="i"
+                  placeholder="Enter a custom house rule..."
+                  class="custom-rule-input"
+                  [class.error]="getCustomRuleControl(i)?.invalid && getCustomRuleControl(i)?.touched"
+                  [class.valid]="getCustomRuleControl(i)?.valid && getCustomRuleControl(i)?.touched">
+                <button type="button" class="remove-rule-btn" (click)="removeCustomRule(i)">
+                  <i class="pi pi-trash"></i>
+                </button>
+              </div>
+              <small class="error-message" *ngIf="getCustomRuleControl(i)?.invalid && getCustomRuleControl(i)?.touched">
+                Please enter a valid house rule
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quiet Hours Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-volume-off"></i> Quiet Hours</h3>
+          <p>Set specific hours when guests should keep noise to a minimum</p>
+        </div>
+        
+        <div formGroupName="quietHours">
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <p-checkbox
+                formControlName="enabled"
+                inputId="quietHoursEnabled"
+                [binary]="true">
+              </p-checkbox>
+              <div class="toggle-content">
+                <label for="quietHoursEnabled" class="toggle-label">Enable Quiet Hours</label>
+                <small class="toggle-description">
+                  Set specific hours when guests should keep noise levels down
+                </small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="quiet-hours-config" *ngIf="quietHoursEnabledValue">
+            <div class="form-grid two-column">
+              <div class="form-group">
+                <label for="quietHoursStart">Start Time</label>
+                <p-dropdown
+                  id="quietHoursStart"
+                  formControlName="startTime"
+                  [options]="timeOptions"
+                  placeholder="Select start time">
+                </p-dropdown>
+              </div>
+              
+              <div class="form-group">
+                <label for="quietHoursEnd">End Time</label>
+                <p-dropdown
+                  id="quietHoursEnd"
+                  formControlName="endTime"
+                  [options]="timeOptions"
+                  placeholder="Select end time">
+                </p-dropdown>
+              </div>
+            </div>
+            
+            <div class="form-group">
+              <label for="quietHoursDescription">Additional Instructions (Optional)</label>
+              <textarea
+                id="quietHoursDescription"
+                formControlName="description"
+                placeholder="Any additional quiet hours instructions..."
+                rows="3"
+                class="form-textarea">
+              </textarea>
+              <small class="help-text">Provide any additional context about your quiet hours policy</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Age Restrictions Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-user"></i> Age Restrictions</h3>
+          <p>Set minimum age requirements for primary guests</p>
+        </div>
+        
+        <div formGroupName="ageRestriction">
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <p-checkbox
+                formControlName="enabled"
+                inputId="ageRestrictionEnabled"
+                [binary]="true">
+              </p-checkbox>
+              <div class="toggle-content">
+                <label for="ageRestrictionEnabled" class="toggle-label">Enable Age Restriction</label>
+                <small class="toggle-description">
+                  Require primary guest to be above a certain age
+                </small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="age-restriction-config" *ngIf="ageRestrictionEnabledValue">
+            <div class="form-grid two-column">
+              <div class="form-group">
+                <label for="minimumAge">Minimum Age <span class="required">*</span></label>
+                <p-inputNumber
+                  id="minimumAge"
+                  formControlName="minimumAge"
+                  [min]="1"
+                  [max]="100"
+                  [showButtons]="true"
+                  placeholder="18"
+                  [class.p-invalid]="isFieldInvalid('ageRestriction.minimumAge')"
+                  [class.p-valid]="isFieldValid('ageRestriction.minimumAge')">
+                </p-inputNumber>
+                <small class="help-text">Minimum age for primary guest</small>
+              </div>
+              
+              <div class="form-group">
+                <label for="ageExceptions">Exceptions (Optional)</label>
+                <input
+                  type="text"
+                  id="ageExceptions"
+                  formControlName="exceptions"
+                  placeholder="e.g., Families with children welcome"
+                  class="form-input">
+                <small class="help-text">Any exceptions to the age restriction</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Guest Verification Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-verified"></i> Guest Verification Requirements</h3>
+          <p>Choose what verification you require from guests before booking</p>
+        </div>
+        
+        <div formGroupName="guestVerification" class="verification-grid">
+          <div class="verification-item">
+            <p-checkbox
+              formControlName="governmentId"
+              inputId="governmentId"
+              [binary]="true">
+            </p-checkbox>
+            <div class="verification-content">
+              <label for="governmentId" class="verification-label">Government ID</label>
+              <small class="verification-description">
+                Require guests to provide government-issued photo ID
+              </small>
+            </div>
+          </div>
+          
+          <div class="verification-item">
+            <p-checkbox
+              formControlName="phoneVerification"
+              inputId="phoneVerification"
+              [binary]="true">
+            </p-checkbox>
+            <div class="verification-content">
+              <label for="phoneVerification" class="verification-label">Phone Verification</label>
+              <small class="verification-description">
+                Require guests to verify their phone number
+              </small>
+            </div>
+          </div>
+          
+          <div class="verification-item">
+            <p-checkbox
+              formControlName="emailVerification"
+              inputId="emailVerification"
+              [binary]="true">
+            </p-checkbox>
+            <div class="verification-content">
+              <label for="emailVerification" class="verification-label">Email Verification</label>
+              <small class="verification-description">
+                Require guests to verify their email address
+              </small>
+            </div>
+          </div>
+          
+          <div class="verification-item">
+            <p-checkbox
+              formControlName="profilePhoto"
+              inputId="profilePhoto"
+              [binary]="true">
+            </p-checkbox>
+            <div class="verification-content">
+              <label for="profilePhoto" class="verification-label">Profile Photo</label>
+              <small class="verification-description">
+                Require guests to upload a profile photo
+              </small>
+            </div>
+          </div>
+          
+          <div class="verification-item">
+            <p-checkbox
+              formControlName="references"
+              inputId="references"
+              [binary]="true">
+            </p-checkbox>
+            <div class="verification-content">
+              <label for="references" class="verification-label">References</label>
+              <small class="verification-description">
+                Require guests to provide references from previous hosts
+              </small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Damage Policy Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-exclamation-triangle"></i> Damage & Security Policy</h3>
+          <p>Set policies for handling potential property damage</p>
+        </div>
+        
+        <div formGroupName="damagePolicy">
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <p-checkbox
+                formControlName="securityDepositRequired"
+                inputId="securityDepositRequired"
+                [binary]="true">
+              </p-checkbox>
+              <div class="toggle-content">
+                <label for="securityDepositRequired" class="toggle-label">Require Security Deposit</label>
+                <small class="toggle-description">
+                  Hold a refundable security deposit for potential damages
+                </small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="damage-policy-config" *ngIf="damagePolicySecurityDepositRequiredValue">
+            <div class="form-grid two-column">
+              <div class="form-group">
+                <label for="damageAmount">Security Deposit Amount <span class="required">*</span></label>
+                <p-inputNumber
+                  id="damageAmount"
+                  formControlName="amount"
+                  mode="currency"
+                  currency="USD"
+                  [min]="1"
+                  [max]="10000"
+                  placeholder="0.00"
+                  [class.p-invalid]="isFieldInvalid('damagePolicy.amount')"
+                  [class.p-valid]="isFieldValid('damagePolicy.amount')">
+                </p-inputNumber>
+                <small class="help-text">Amount to hold as security deposit</small>
+              </div>
+              
+              <div class="form-group">
+                <label for="refundPolicy">Refund Policy</label>
+                <p-dropdown
+                  id="refundPolicy"
+                  formControlName="refundPolicy"
+                  [options]="refundPolicyOptions"
+                  placeholder="Select refund policy">
+                </p-dropdown>
+                <small class="help-text">How will you handle deposit refunds?</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Access Instructions Section -->
+      <div class="form-section">
+        <div class="section-header">
+          <h3><i class="pi pi-key"></i> Access Instructions</h3>
+          <p>Provide instructions for guests to access your property</p>
+        </div>
+        
+        <div formGroupName="accessInstructions">
+          <div class="toggle-group">
+            <div class="toggle-item">
+              <p-checkbox
+                formControlName="selfCheckIn"
+                inputId="selfCheckIn"
+                [binary]="true">
+              </p-checkbox>
+              <div class="toggle-content">
+                <label for="selfCheckIn" class="toggle-label">Enable Self Check-in</label>
+                <small class="toggle-description">
+                  Allow guests to check in without meeting you in person
+                </small>
+              </div>
+            </div>
+          </div>
+          
+          <div class="access-config" *ngIf="accessInstructionsSelfCheckInValue">
+            <div class="form-group">
+              <label for="keyLocation">Key Location Instructions <span class="required">*</span></label>
+              <textarea
+                id="keyLocation"
+                formControlName="keyLocation"
+                placeholder="Describe where guests can find the key (e.g., lockbox code, key under mat, etc.)"
+                rows="3"
+                class="form-textarea"
+                [class.error]="isFieldInvalid('accessInstructions.keyLocation')"
+                [class.valid]="isFieldValid('accessInstructions.keyLocation')">
+              </textarea>
+              <small class="help-text">Provide clear instructions on how guests can access the property</small>
+              <small class="error-message" *ngIf="isFieldInvalid('accessInstructions.keyLocation')">
+                {{ getFieldError('accessInstructions.keyLocation') }}
+              </small>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label for="specialInstructions">Special Access Instructions (Optional)</label>
+            <textarea
+              id="specialInstructions"
+              formControlName="specialInstructions"
+              placeholder="Any additional instructions for accessing the property..."
+              rows="4"
+              class="form-textarea">
+            </textarea>
+            <small class="help-text">Include any special instructions, building codes, parking information, etc.</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="goBack()" [disabled]="isSubmitting">
+          <i class="pi pi-arrow-left"></i> Back
+        </button>
+        
+        <button type="submit" class="btn btn-primary" [disabled]="!isFormValid || isSubmitting">
+          <i class="pi pi-spin pi-spinner" *ngIf="isSubmitting"></i>
+          <i class="pi pi-check" *ngIf="!isSubmitting"></i>
+          {{ isSubmitting ? 'Saving Policies...' : 'Save' }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Loading State -->
+  <div class="loading-container" *ngIf="isLoading">
+    <div class="loading-content">
+      <i class="pi pi-spin pi-spinner"></i>
+      <h3>Loading Your Policies</h3>
+      <p>Please wait while we load your existing policy settings...</p>
+    </div>
+  </div>
+</div>
