@@ -1,0 +1,484 @@
+<!-- <div class="room-form-container" style="margin-bottom: 80px;"> -->
+
+<div class="form-container" style="padding: 0 0 100px 0">
+  <p-accordion [activeIndex]="0">
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span class="flex items-center gap-2 w-full">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png"
+            shape="circle"
+          ></p-avatar>
+          <span class="font-bold whitespace-nowrap">
+            <h4 style="margin-bottom: 0">Room Details</h4>
+            <p class="form-subtitle" style="margin-bottom: 0">
+              Add the name and key features of this room type
+            </p>
+          </span>
+          <p-badge value="3" class="ml-auto mr-2"></p-badge>
+        </span>
+      </ng-template>
+      <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" class="room-form">
+        <div formGroupName="roomDetailsFormInfo">
+          <!-- Room Type -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label">Room type</label>
+              <p class="field-description">
+                Choose the type that best describes this room
+              </p>
+            </div>
+            <div class="mt-3 w-45">
+              <p-dropdown
+                formControlName="type"
+                [options]="roomTypes"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select room type"
+                styleClass="w-full"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+
+          <!-- Room View -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label">Room view</label>
+              <p class="field-description">
+                Describe what the guest will see from this room, like pool,
+                garden, or city views.
+              </p>
+            </div>
+            <div class="mt-3 w-45">
+              <p-dropdown
+                formControlName="view"
+                [options]="roomViews"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select room view"
+                styleClass="w-full"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+
+          <!-- Room Size -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label">Room Size (Area)</label>
+              <p class="field-description">
+                Specify the indoor area of the room in square units, exclude
+                shared spaces
+              </p>
+            </div>
+            <div class="size-input-container mt-3">
+              <div class="radio-group">
+                <div class="radio-item">
+                  <p-radioButton
+                    formControlName="sizeUnit"
+                    value="sqft"
+                    inputId="sqft"
+                  >
+                  </p-radioButton>
+                  <label for="sqft">Square Feet</label>
+                </div>
+                <div class="radio-item">
+                  <p-radioButton
+                    formControlName="sizeUnit"
+                    value="sqm"
+                    inputId="sqm"
+                  >
+                  </p-radioButton>
+                  <label for="sqm">Square Meter</label>
+                </div>
+              </div>
+              <input
+                type="text"
+                pInputText
+                formControlName="size"
+                placeholder="Enter size"
+                class="size-input"
+              />
+            </div>
+          </div>
+
+          <!-- Room Name -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label"
+                >Room Name as shown on FestGo & its partner websites</label
+              >
+              <p class="field-description">
+                Add a room name that looks attractive to travellers
+              </p>
+            </div>
+            <div class="mt-3 w-45">
+              <input
+                type="text"
+                pInputText
+                formControlName="name"
+                placeholder="Example: Luxury room with private pool"
+                class=""
+                style="width: 100%"
+              />
+            </div>
+          </div>
+
+          <!-- Number of Rooms -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label">Number of rooms (of this type)</label>
+              <p class="field-description">
+                The specified room numbers will be reflected as inventory for
+                this room
+              </p>
+            </div>
+            <div class="mt-3 w-45">
+              <input
+                type="number"
+                pInputText
+                formControlName="numberOfRooms"
+                placeholder="1"
+                class="number-input"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label"
+                >Description of the room (Optional)</label
+              >
+              <p class="field-description">
+                Highlight what makes this room appealing — its view, comfort,
+                and key features.
+              </p>
+              <ul class="description-tips">
+                <li>Highlight what makes the room special</li>
+                <li>Describe what can be seen from the room</li>
+                <li>List the features and services provided</li>
+              </ul>
+            </div>
+            <div class="w-45">
+              <textarea
+                pInputTextarea
+                formControlName="description"
+                placeholder="Write the description"
+                rows="6"
+                class="w-full"
+              >
+              </textarea>
+            </div>
+          </div>
+        </div>
+      </form>
+    </p-accordionTab>
+
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span class="flex items-center gap-2 w-full">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/onyamalimba.png"
+            shape="circle"
+          ></p-avatar>
+          <span class="font-bold whitespace-nowrap">
+            <h4 style="margin-bottom: 0">Sleeping Arrangement & Occupancy</h4>
+            <p class="form-subtitle" style="margin-bottom: 0">
+              Select bed types and how many guests this room can host
+            </p>
+          </span>
+          <p-badge value="4" class="ml-auto mr-2"></p-badge>
+        </span>
+      </ng-template>
+      <!-- <p class="m-0">
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+        accusantium doloremque laudantium.
+      </p> -->
+      <!-- Sleeping Arrangement & Occupancy -->
+      <div [formGroup]="form">
+
+        <h3>Standard Arrangement</h3>
+        <div formArrayName="standardBeds" *ngFor="let bed of standardBeds.controls; let i = index" [formGroupName]="i">
+          <p-dropdown [options]="bedFormats" formControlName="bedType" placeholder="Select Bed Type"></p-dropdown>
+          <p-inputNumber formControlName="count" [min]="1"></p-inputNumber>
+          <button pButton icon="pi pi-trash" (click)="removeBed(standardBeds, i)" *ngIf="standardBeds.length > 1"></button>
+        </div>
+        <button pButton label="Add Another Bed Type" (click)="addBed(standardBeds)"></button>
+      
+        <div>
+          <label>Can this room accommodate extra bed(s)?</label>
+          <p-radioButton name="standardExtraBed" value="true" formControlName="standardExtraBed"></p-radioButton> Yes
+          <p-radioButton name="standardExtraBed" value="false" formControlName="standardExtraBed"></p-radioButton> No
+        </div>
+      
+        <!-- <h3>Alternative Sleeping Arrangement</h3>
+        <label>Does this room offer an alternate sleeping arrangement?</label>
+        <p-radioButton name="altArrangementAvailable" [value]="true" formControlName="altArrangementAvailable"></p-radioButton> Yes
+        <p-radioButton name="altArrangementAvailable" [value]="false" formControlName="altArrangementAvailable"></p-radioButton> No
+      
+        <div *ngIf="form.get('altArrangementAvailable')?.value">
+          <div formArrayName="alternateBeds" *ngFor="let bed of alternateBeds.controls; let i = index" [formGroupName]="i">
+            <p-dropdown [options]="bedFormats" formControlName="bedType"></p-dropdown>
+            <p-inputNumber formControlName="count" [min]="1"></p-inputNumber>
+            <button pButton icon="pi pi-trash" (click)="removeBed(alternateBeds, i)" *ngIf="alternateBeds.length > 1"></button>
+          </div>
+          <button pButton label="Add Another Alternative Bed Type" (click)="addBed(alternateBeds)"></button>
+      
+          <label>Can this room accommodate extra bed(s)?</label>
+          <p-radioButton name="altExtra" [value]="true" formControlName="alternateExtraBed"></p-radioButton> Yes
+          <p-radioButton name="altExtra" [value]="false" formControlName="alternateExtraBed"></p-radioButton> No
+      
+          <label>Maximum number of extra beds</label>
+          <p-inputNumber formControlName="maxExtraBeds" [min]="0"></p-inputNumber>
+        </div> -->x
+      
+        <h3>Occupancy</h3>
+
+        <div style="display: grid;">
+          <label>Base adults</label>
+            <p-inputNumber formControlName="baseAdults" [min]="1"></p-inputNumber>
+
+            <label>Maximum adults</label>
+            <p-inputNumber formControlName="maxAdults" [min]="1"></p-inputNumber>
+            <div *ngIf="roomForm.get('maxAdults')?.value > totalBeds(standardBeds)">
+              <p style="color: orange">⚠️ The selected occupancy exceeds the limit based on bed configuration.</p>
+            </div>
+
+            <label>Maximum children</label>
+            <p-inputNumber formControlName="maxChildren" [min]="0"></p-inputNumber>
+
+            <label>Maximum occupancy</label>
+            <p-inputNumber formControlName="maxOccupancy" [min]="1"></p-inputNumber>
+        </div>
+            
+        <div *ngIf="roomForm.get('maxOccupancy')?.value > totalBeds(standardBeds)">
+          <p style="color: orange">⚠️ The selected occupancy exceeds the limit based on bed configuration.</p>
+        </div>
+
+      
+      </div>
+      
+    </p-accordionTab>
+
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span class="flex items-center gap-2 w-full">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/ionibowcher.png"
+            shape="circle"
+          ></p-avatar>
+          <span class="font-bold whitespace-nowrap">
+            <h4 style="margin-bottom: 0">Bathroom Details</h4>
+            <p class="form-subtitle" style="margin-bottom: 0">
+              Add details of bathroom(s) for this room type
+            </p>
+          </span>
+          <p-badge value="2" class="ml-auto mr-2"></p-badge>
+        </span>
+      </ng-template>
+      <!-- Bathroom Details -->
+      <form [formGroup]="roomForm" (ngSubmit)="onSubmit()" class="room-form">
+        <div formGroupName="bathroomDetailsFormInfo">
+          <div class="form-field d-flex justify-content-between">
+            <div>
+              <label class="field-label">Bathroom available</label>
+              <!-- <p class="field-description">
+                The specified room numbers will be reflected as inventory for
+                this room
+              </p> -->
+            </div>
+            <div class="mt-3 w-45">
+              <input
+                type="number"
+                pInputText
+                formControlName="numberOfBathrooms"
+                placeholder="1"
+                class="number-input"
+                style="width: 100%"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+    </p-accordionTab>
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span class="flex items-center gap-2 w-full">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/ionibowcher.png"
+            shape="circle"
+          ></p-avatar>
+          <span class="font-bold whitespace-nowrap">
+            <h4 style="margin-bottom: 0">
+              Meal Plan, Rates & Inventory Details
+            </h4>
+            <p class="form-subtitle" style="margin-bottom: 0">
+              Set up the meal plan, pricing, and inventory to make this room
+              ready to sell.
+            </p>
+          </span>
+          <p-badge value="2" class="ml-auto mr-2"></p-badge>
+        </span>
+      </ng-template>
+      <p class="m-0">
+        At vero eos et accusamus et iusto odio dignissimos ducimus qui
+        blanditiis praesentium voluptatum.
+      </p>
+      <!-- Meal Plan, Rates & Inventory Details -->
+      <form action="" [formGroup]="roomForm">
+        <div class="subsection" formGroupName="mealPlanDetailsFormInfo">
+          <!-- Meal Options -->
+          <div class="meal-options-section">
+            <h4>Meal Options</h4>
+
+            <div class="form-field">
+              <label class="field-label">Select a meal plan</label>
+              <p class="field-description">
+                Choose the meal plan included with this room type, such as
+                Breakfast Only, MAP, or All Meals
+              </p>
+              <p-dropdown
+                formControlName="mealPlan"
+                [options]="mealPlans"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select meal plan"
+                styleClass="w-full"
+              >
+              </p-dropdown>
+            </div>
+          </div>
+
+          <!-- Room Prices -->
+          <div class="room-prices-section">
+            <h4>Room Prices</h4>
+
+            <div class="pricing-grid">
+              <!-- Base Rate -->
+              <div class="pricing-field">
+                <label class="pricing-label">Base Rate for 2 adults</label>
+                <p class="pricing-description">
+                  Enter the standard room rate for 2 adults.
+                </p>
+                <div class="currency-input">
+                  <span class="currency-symbol">₹</span>
+                  <input
+                    type="number"
+                    pInputText
+                    formControlName="baseRateFor2Adults"
+                    placeholder="0"
+                    class="price-input"
+                  />
+                </div>
+              </div>
+
+              <!-- Extra Adult Charge -->
+              <div class="pricing-field">
+                <label class="pricing-label">Extra Adult Charge</label>
+                <p class="pricing-description">
+                  Additional charge for each adult guest aged 18 years or older.
+                </p>
+                <div class="currency-input">
+                  <span class="currency-symbol">₹</span>
+                  <input
+                    type="number"
+                    pInputText
+                    formControlName="extraAdultCharge"
+                    placeholder="0"
+                    class="price-input"
+                  />
+                </div>
+              </div>
+
+              <!-- Paid Child Charge -->
+              <div class="pricing-field">
+                <label class="pricing-label">Paid Child Charge</label>
+                <p class="pricing-description">
+                  Charge per child aged 7 to 17 years
+                </p>
+                <div class="currency-input">
+                  <span class="currency-symbol">₹</span>
+                  <input
+                    type="number"
+                    pInputText
+                    formControlName="paidChildCharge"
+                    placeholder="0"
+                    class="price-input"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Inventory Calendar -->
+          <!-- <div class="inventory-section">
+            <h4>Inventory Calendar</h4>
+
+            <div class="form-field">
+              <label class="field-label">Select a date range</label>
+              <div class="date-range-container">
+                <div class="date-field">
+                  <label class="date-label">Start Date</label> -->
+                  <!-- <p-calendar 
+                    formControlName="inventoryStartDate"
+                    [showIcon]="true"
+                    [showClear]="true"
+                    placeholder="Select start date"
+                    dateFormat="dd M, yy"
+                    styleClass="w-full">
+                  </p-calendar> -->
+                <!-- </div>
+
+                <div class="date-field">
+                  <label class="date-label">End Date</label> -->
+                  <!-- <p-calendar 
+                    formControlName="inventoryEndDate"
+                    [showIcon]="true"
+                    [showClear]="true"
+                    placeholder="Select end date"
+                    dateFormat="dd M, yy"
+                    styleClass="w-full">
+                  </p-calendar> -->
+                <!-- </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
+      </form>
+    </p-accordionTab>
+
+    <!-- Amenities -->
+    <p-accordionTab>
+      <ng-template pTemplate="header">
+        <span class="flex items-center gap-2 w-full">
+          <p-avatar
+            image="https://primefaces.org/cdn/primeng/images/demo/avatar/ionibowcher.png"
+            shape="circle"
+          ></p-avatar>
+          <span class="font-bold whitespace-nowrap">
+            <h4 style="margin-bottom: 0">Amenity Details</h4>
+            <p class="form-subtitle" style="margin-bottom: 0">
+              Select the amenities available in this room to help travelers know
+              what to expect during their stay
+            </p>
+          </span>
+          <p-badge value="2" class="ml-auto mr-2"></p-badge>
+        </span>
+      </ng-template>
+      <app-room-amenities></app-room-amenities>
+    </p-accordionTab>
+  </p-accordion>
+</div>
+<!-- Form Actions -->
+<div class="form-actions">
+  <button type="button" class="cancel-button" (click)="onCancel()">
+    Cancel
+  </button>
+  <button type="submit" class="submit-button" [disabled]="roomForm.invalid">
+    <span>Save Room</span>
+  </button>
+</div>
+<!-- </div> -->

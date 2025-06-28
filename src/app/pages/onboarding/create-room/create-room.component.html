@@ -1,0 +1,9 @@
+<!-- <div class="room-form-container" > -->
+    <app-room-form
+      [roomData]="editingIndex !== null ? getRoomData(editingIndex) : null"
+      [roomTypes]="roomTypes"
+      [amenitiesList]="amenitiesList"
+      (save)="saveRoom($event)"
+      (cancel)="cancelRoomForm()">
+    </app-room-form>
+  <!-- </div> -->

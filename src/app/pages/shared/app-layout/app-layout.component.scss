@@ -1,0 +1,525 @@
+.app-layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background-color: #f5f7fa;
+  color: #333;
+
+  &.dark-theme {
+    background-color: #121212;
+    color: #f8f9fa;
+  }
+}
+
+/* Top Navigation Bar */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.5rem;
+  background-color: #fff;
+  border-bottom: 1px solid #e0e0e0;
+  height: 60px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  .dark-theme & {
+    background-color: #1e1e1e;
+    border-color: #333;
+  }
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-right: 8px;
+}
+
+.logo-circle {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+
+  &.orange {
+    background-color: #f05a29;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  &.blue {
+    background-color: #4a4a4a;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+  }
+}
+
+.logo-text {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #333;
+
+  .dark-theme & {
+    color: #f8f9fa;
+  }
+}
+
+.page-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.page-type {
+  font-weight: 500;
+  color: #333;
+
+  .dark-theme & {
+    color: #f8f9fa;
+  }
+}
+
+.page-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+
+  .dark-theme & {
+    background-color: #2c2c2c;
+    color: #aaa;
+  }
+}
+
+.user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  position: relative;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f0f4ff;
+  color: #304c8e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Profile Dropdown Menu */
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 300px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  overflow: hidden;
+
+  .dark-theme & {
+    background-color: #1e1e1e;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+    
+    .dark-theme & {
+      background-color: #2c2c2c;
+    }
+  }
+}
+
+.profile-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 1rem;
+
+  .dark-theme & {
+    background-color: #333;
+  }
+
+  i {
+    font-size: 1.25rem;
+    color: #666;
+    
+    .dark-theme & {
+      color: #aaa;
+    }
+  }
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.25rem;
+  color: #333;
+
+  .dark-theme & {
+    color: #f8f9fa;
+  }
+}
+
+.profile-title {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 0;
+
+  .dark-theme & {
+    color: #aaa;
+  }
+}
+
+.dropdown-divider {
+  height: 1px;
+  background-color: #e0e0e0;
+  margin: 0;
+
+  .dark-theme & {
+    background-color: #333;
+  }
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f5f5f5;
+    
+    .dark-theme & {
+      background-color: #2c2c2c;
+    }
+  }
+
+  span {
+    font-size: 0.9rem;
+    color: #333;
+    
+    .dark-theme & {
+      color: #f8f9fa;
+    }
+  }
+
+  &.logout {
+    span {
+      font-weight: 600;
+    }
+  }
+}
+
+/* Main Content Layout */
+.main-content {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden; /* Prevent scrolling on this container */
+  height: calc(100vh - 60px);
+}
+
+/* Vertical Sidebar */
+.vertical-sidebar {
+  width: 90px;
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 0;
+  height: 100%;
+  z-index: 999;
+  overflow-y: auto; /* Allow scrolling if sidebar content is too tall */
+  flex-shrink: 0;
+
+  .dark-theme & {
+    background-color: #1a1a1a;
+  }
+}
+
+.sidebar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #e0e0e0;
+    
+    .dark-theme & {
+      background-color: #2c2c2c;
+    }
+  }
+
+  &.active {
+    background-color: #fef0ec;
+    border-left: 3px solid #f05a29;
+    
+    .dark-theme & {
+      background-color: #2c2c2c;
+    }
+  }
+}
+
+.sidebar-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #666;
+
+  .dark-theme & {
+    color: #aaa;
+  }
+
+  .active & {
+    color: #f05a29;
+  }
+}
+
+.sidebar-text {
+  font-size: 0.75rem;
+  text-align: center;
+  color: #666;
+
+  .dark-theme & {
+    color: #aaa;
+  }
+
+  .active & {
+    color: #f05a29;
+    font-weight: 500;
+  }
+}
+
+/* Main Content Area */
+.content {
+  flex: 1;
+  padding: 0 9rem;
+  overflow-y: auto;
+  background-color: #f5f7fa;
+   height: 100%;
+
+  .dark-theme & {
+    background-color: #121212;
+  }
+}
+
+/* Change Password Dialog */
+.change-password-content {
+  padding: 1rem 0;
+}
+
+.form-field {
+  margin-bottom: 1.25rem;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+
+  .dark-theme & {
+    color: #f8f9fa;
+  }
+}
+
+.form-field input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+
+  .dark-theme & {
+    background-color: #1e1e1e;
+    border-color: #333;
+    color: #f8f9fa;
+  }
+}
+
+.form-field input:focus {
+  outline: none;
+  border-color: #f05a29;
+}
+
+.form-field input.invalid {
+  border-color: #dc3545;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.75rem 1.25rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+
+  &.btn-primary {
+    background-color: #f05a29;
+    color: white;
+    border: none;
+    
+    &:hover {
+      background-color: darken(#f05a29, 10%);
+    }
+    
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+  }
+
+  &.btn-outline {
+    background-color: transparent;
+    border: 1px solid #ccc;
+    color: #666;
+    
+    .dark-theme & {
+      border-color: #444;
+      color: #ddd;
+    }
+    
+    &:hover {
+      background-color: #f5f5f5;
+      
+      .dark-theme & {
+        background-color: #2c2c2c;
+      }
+    }
+  }
+}
+
+/* PrimeNG Dialog Dark Theme */
+:host ::ng-deep {
+  .dark-dialog {
+    .p-dialog-header {
+      background-color: #1e1e1e;
+      color: #f8f9fa;
+      border-bottom: 1px solid #333;
+    }
+    
+    .p-dialog-content {
+      background-color: #1e1e1e;
+      color: #f8f9fa;
+    }
+    
+    .p-dialog-footer {
+      background-color: #1e1e1e;
+      border-top: 1px solid #333;
+    }
+    
+    .pi-times {
+      color: #f8f9fa;
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+    height: calc(100vh - 60px);
+  }
+
+  .vertical-sidebar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 0.5rem 0;
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+
+  .content {
+    height: calc(100% - 50px); /* Adjust for the height of the horizontal sidebar */
+  }
+
+  .sidebar-item {
+    flex-direction: row;
+    justify-content: center;
+    padding: 0.5rem;
+    
+    &.active {
+      border-left: none;
+      border-bottom: 3px solid #f05a29;
+    }
+  }
+
+  .sidebar-icon {
+    margin-bottom: 0;
+    margin-right: 0.5rem;
+  }
+
+  .profile-dropdown {
+    width: 280px;
+    right: -70px;
+  }
+
+  .page-info {
+    display: none;
+  }
+}

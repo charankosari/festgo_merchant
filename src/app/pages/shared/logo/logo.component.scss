@@ -1,0 +1,92 @@
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  position: relative;
+  margin-right: 8px;
+}
+
+.logo-circle {
+  position: absolute;
+  border-radius: 50%;
+
+  &.orange {
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  &.blue {
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+  }
+}
+
+.logo-text {
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* Logo sizes */
+.logo-small {
+  .logo {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .logo-circle {
+    width: 16px;
+    height: 16px;
+  }
+  
+  .logo-text {
+    font-size: 1rem;
+  }
+  
+  .custom-logo {
+    height: 24px;
+  }
+}
+
+.logo-medium {
+  .logo {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .logo-circle {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+  }
+  
+  .custom-logo {
+    height: 30px;
+  }
+}
+
+.logo-large {
+  .logo {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .logo-circle {
+    width: 26px;
+    height: 26px;
+  }
+  
+  .logo-text {
+    font-size: 1.5rem;
+  }
+  
+  .custom-logo {
+    height: 40px;
+  }
+}

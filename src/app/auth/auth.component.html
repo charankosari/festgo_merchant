@@ -1,0 +1,234 @@
+<div class="auth-container" [ngClass]="themeService.isDarkTheme ? 'dark-theme' : 'light-theme'">
+  <!-- Left Side - Branding -->
+  <div class="branding-section" [style.background-color]="whiteLabelConfig.primaryColor">
+    <div class="logo-container">
+      <div class="logo-shape"></div>
+      <!-- <div class="logo-circle" [style.background-color]="whiteLabelConfig.secondaryColor"></div> -->
+    </div>
+    <img class="main-logo" src="../../assets/logo-nobg.png" alt="logo">
+    <div class="branding-content">
+      <h1>Welcome to {{whiteLabelConfig.companyName}}</h1>
+      <p>Do you own a resort, hotel, or trips? Reach thousands of travelers every day by listing your property on our
+        platform — your gateway to greater visibility, higher bookings, and direct reach to guests worldwide.</p>
+    </div>
+  </div>
+
+  <!-- Right Side - Form -->
+  <div class="form-section">
+    <div class="form-container">
+      <!-- Logo -->
+      <div class="form-logo">
+        <!-- <app-logo class="form-logo" size="small"></app-logo> -->
+        <img src="../../assets/small-logo.jpeg" alt="logo" class="logo-image">
+      </div>
+
+      <!-- Title -->
+      <h2>{{ isSignUp ? 'Sign Up' : 'Sign In' }}</h2>
+      <p class="subtitle">Your Admin Dashboard</p>
+
+      <!-- Social Login Buttons -->
+      <!-- <div class="social-buttons">
+        <button class="social-btn google-btn">
+          <i class="pi pi-google"></i>
+          Google
+        </button>
+        <button class="social-btn facebook-btn">
+          <i class="pi pi-facebook"></i>
+          Facebook
+        </button>
+      </div> -->
+
+      <!-- Divider -->
+      <div class="divider">
+        <span>{{ isSignUp ? 'sign up' : 'sign in' }} on the way</span>
+      </div>
+
+      <!-- Sign In Form -->
+      <form *ngIf="signIn" [formGroup]="signInForm" (ngSubmit)="onSignIn()" class="auth-form">
+        <div class="form-field">
+          <label for="email">Username | Phone</label>
+          <input id="email" type="email" formControlName="email"
+            [ngClass]="{'invalid': signInForm.get('email')?.invalid && signInForm.get('email')?.touched}">
+          <small *ngIf="signInForm.get('email')?.invalid && signInForm.get('email')?.touched" class="error-message">
+            Please enter a valid email address
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="password">Password</label>
+          <input id="password" type="password" formControlName="password"
+            [ngClass]="{'invalid': signInForm.get('password')?.invalid && signInForm.get('password')?.touched}">
+          <small *ngIf="signInForm.get('password')?.invalid && signInForm.get('password')?.touched"
+            class="error-message">
+            Password is required
+          </small>
+        </div>
+
+        <div class="form-options">
+          <div class="remember-me">
+            <input type="checkbox" id="rememberMe" formControlName="rememberMe">
+            <label for="rememberMe">Remember this Device</label>
+          </div>
+          <a href="#" class="forgot-link" (click)="showForgotPasswordDialog($event)">Forgot Password ?</a>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="signInForm.invalid"
+          [style.background-color]="whiteLabelConfig.primaryColor">Sign in</button>
+      </form>
+
+      <!-- Sign Up Form -->
+      <form *ngIf="isSignUp" [formGroup]="signUpForm" (ngSubmit)="onSignUp()" class="auth-form">
+        <div class="form-field">
+          <label for="fullName">Name</label>
+          <input id="fullName" type="text" formControlName="fullName"
+            [ngClass]="{'invalid': signUpForm.get('fullName')?.invalid && signUpForm.get('fullName')?.touched}">
+          <small *ngIf="signUpForm.get('fullName')?.invalid && signUpForm.get('fullName')?.touched"
+            class="error-message">
+            Full name is required
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="signUpEmail">Email Address</label>
+          <input id="signUpEmail" type="email" formControlName="email"
+            [ngClass]="{'invalid': signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched}">
+          <small *ngIf="signUpForm.get('email')?.invalid && signUpForm.get('email')?.touched" class="error-message">
+            Please enter a valid email address
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="signUpPhone">Phone</label>
+        
+          <div class="input-with-button">
+            <input
+              id="signUpPhone"
+              type="tel"
+              formControlName="phone"
+              maxlength="10"
+              minlength="10"
+              [ngClass]="{'invalid': signUpForm.get('phone')?.invalid && signUpForm.get('phone')?.touched}"
+            />
+            <!-- <button
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="getMobileOtp()"
+              [disabled]="signUpForm.get('phone')?.invalid"
+            >
+              Verify
+            </button> -->
+          </div>
+        
+          <small *ngIf="signUpForm.get('phone')?.invalid && signUpForm.get('phone')?.touched" class="error-message">
+            Phone must be 10 digits
+          </small>
+        </div>
+        
+
+        <div class="form-field">
+          <label for="signUpPassword">Password</label>
+          <input id="signUpPassword" type="password" formControlName="password"
+            [ngClass]="{'invalid': signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched}">
+          <small *ngIf="signUpForm.get('password')?.invalid && signUpForm.get('password')?.touched"
+            class="error-message">
+            Password must be at least 8 characters
+          </small>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="signUpForm.invalid">Sign Up</button>
+      </form>
+
+      <form *ngIf="showPhoneInput" [formGroup]="phoneSignInForm" (ngSubmit)="onPhoneSignIn()" class="auth-form">
+
+        <div class="form-field">
+          <label for="signUpPhone">Phone</label>
+        
+          <div class="input-with-button">
+            <input
+              id="signUpPhone"
+              type="tel"
+              formControlName="phone"
+              maxlength="10"
+              minlength="10"
+              [ngClass]="{'invalid': phoneSignInForm.get('phone')?.invalid && phoneSignInForm.get('phone')?.touched}"
+            />
+            <button
+              class="btn btn-outline-primary"
+              type="button"
+              (click)="requestLoginOtp()"
+              [disabled]="phoneSignInForm.get('phone')?.invalid"
+            >
+              Send OTP
+            </button>
+          </div>
+        
+          <small *ngIf="phoneSignInForm.get('phone')?.invalid && phoneSignInForm.get('phone')?.touched" class="error-message">
+            Phone must be 10 digits
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="otp">OTP</label>
+          <input id="otp" type="text" formControlName="otp"
+            [ngClass]="{'invalid': phoneSignInForm.get('otp')?.invalid && phoneSignInForm.get('otp')?.touched}">
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="phoneSignInForm.invalid"
+          [style.background-color]="whiteLabelConfig.primaryColor">Sign in</button>
+      </form>
+
+      <!-- Toggle Form Link -->
+      <div class="toggle-form">
+        <p *ngIf="!isSignUp && !signIn">
+          Sign In using OTP <a href="#" (click)="toggleFormPhone(); $event.preventDefault()"
+            [style.color]="whiteLabelConfig.primaryColor">Sign in</a>
+        </p>
+        <p *ngIf="signIn && !isSignUp">
+          Sign In <a href="#" (click)="toggleFormPhone(); $event.preventDefault()"
+            [style.color]="whiteLabelConfig.primaryColor">Sign in</a>
+        </p>
+        <p *ngIf="!isSignUp">
+          New to {{whiteLabelConfig.companyName}}? <a href="#" (click)="toggleSignUpForm(); $event.preventDefault()"
+            [style.color]="whiteLabelConfig.primaryColor">Create an account</a>
+        </p>
+        <p *ngIf="isSignUp">
+          Already have an Account? <a href="#" (click)="toggleForm(); $event.preventDefault()"
+            [style.color]="whiteLabelConfig.primaryColor">Sign in</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Forgot Password Dialog -->
+  <p-dialog [(visible)]="forgotPasswordVisible" [modal]="true" [draggable]="false" [resizable]="false"
+    [style]="{width: '400px'}" header="Reset Password" [closeOnEscape]="true" [blockScroll]="true"
+    [contentStyle]="themeService.isDarkTheme ? {'background-color': '#1e1e1e', 'color': '#f8f9fa'} : {}"
+    styleClass="{{themeService.isDarkTheme ? 'dark-dialog' : ''}}">
+    <form [formGroup]="forgotPasswordForm" (ngSubmit)="onForgotPasswordSubmit()">
+      <div class="forgot-password-content">
+        <p>Enter your email address and we'll send you a link to reset your password.</p>
+
+        <div class="form-field">
+          <label for="resetEmail">Email Address</label>
+          <input id="resetEmail" type="email" formControlName="email"
+            [ngClass]="{'invalid': forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched}">
+          <small *ngIf="forgotPasswordForm.get('email')?.invalid && forgotPasswordForm.get('email')?.touched"
+            class="error-message">
+            Please enter a valid email address
+          </small>
+        </div>
+
+        <div class="forgot-password-actions">
+          <button type="button" class="cancel-btn" (click)="forgotPasswordVisible = false">Cancel</button>
+          <button type="submit" class="submit-btn" [disabled]="forgotPasswordForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Send Reset Link</span>
+            <span *ngIf="isSubmitting">Sending...</span>
+          </button>
+        </div>
+      </div>
+    </form>
+  </p-dialog>
+
+  <!-- Toast for notifications -->
+  <p-toast></p-toast>
+</div>

@@ -1,0 +1,102 @@
+<app-layout pageTitle="" activeMenuItem="properties">
+  <div class="dashboard-content">
+    <div class="properties-header">
+      <h1 class="page-title">My Properties</h1>
+      <button class="list-property-btn" (click)="listNewProperty()">
+        <i class="pi pi-plus"></i> List New Property
+      </button>
+    </div>
+
+    <!-- Tab Navigation -->
+    <div class="tab-navigation">
+      <div class="tab" [class.active]="activeTab === 'active'" (click)="setActiveTab('active')">
+        Active Properties ({{activeProperties.length}})
+      </div>
+      <div class="tab" [class.active]="activeTab === 'inProgress'" (click)="setActiveTab('inProgress')">
+        In-Progress Properties ({{inProgressProperties.length}})
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content-container">
+      <!-- Active Properties Tab -->
+      <div *ngIf="activeTab === 'active'" class="tab-pane">
+        <div *ngIf="activeProperties.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="pi pi-exclamation-circle"></i>
+          </div>
+          <h2 class="empty-title">No Active Properties</h2>
+          <p class="empty-description">
+            Complete your listing soon and make your inactive properties active
+          </p>
+          <div class="empty-actions">
+            <button class="btn btn-outline" (click)="viewInProgressProperties()">
+              View In-Progress Properties
+            </button>
+            <button class="btn btn-primary" (click)="listNewProperty()">
+              <i class="pi pi-plus"></i> List New Property
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="activeProperties.length > 0" class="property-list">
+          <div *ngFor="let property of activeProperties" class="property-card">
+            <h3>{{property.name}}</h3>
+            <p>{{property.address}}</p>
+            <div class="property-status">Active</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- In-Progress Properties Tab -->
+      <div *ngIf="activeTab === 'inProgress'" class="tab-pane">
+        <div *ngIf="inProgressProperties.length === 0" class="empty-state">
+          <div class="empty-icon">
+            <i class="pi pi-exclamation-circle"></i>
+          </div>
+          <h2 class="empty-title">No In-Progress Properties</h2>
+          <p class="empty-description">
+            Start listing a new property to see it here
+          </p>
+          <div class="empty-actions">
+            <button class="btn btn-primary" (click)="listNewProperty()">
+              <i class="pi pi-plus"></i> List New Property
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="inProgressProperties.length > 0" class="properties-table">
+          <div class="table-header">
+            <div class="property-col">Property</div>
+            <div class="status-col">Status</div>
+            <div class="progress-col"></div>
+            <div class="action-col"></div>
+          </div>
+          
+          <div *ngFor="let property of inProgressProperties" class="table-row">
+            <div class="property-col">
+              <div class="property-info">
+                <div class="property-icon">
+                  <i class="pi pi-building"></i>
+                </div>
+                <span class="property-name">{{property.name}}</span>
+              </div>
+            </div>
+            <div class="status-col">{{property.status}}</div>
+            <div class="progress-col">
+              <div class="progress-bar-container">
+                <div class="progress-bar" [style.width]="property.completion + '%'"></div>
+              </div>
+              <span class="progress-text">{{property.completion}}%</span>
+            </div>
+            <div class="action-col">
+              <button class="complete-btn" (click)="continueEditing(property)">
+                Complete <i class="pi pi-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-layout>

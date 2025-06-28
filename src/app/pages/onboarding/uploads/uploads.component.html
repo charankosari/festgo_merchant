@@ -1,0 +1,174 @@
+<div class="media-upload-container">
+    <div class="upload-header">
+      <h2>Upload Photos & Videos</h2>
+      <button type="button" class="close-btn" (click)="onBack()">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+  
+    <div class="upload-content">
+      <!-- Upload Area -->
+      <div class="upload-section">
+        <div 
+          class="upload-area"
+          [ngClass]="{'drag-over': isDragOver}"
+          (dragover)="onDragOver($event)"
+          (dragleave)="onDragLeave($event)"
+          (drop)="onDrop($event)"
+        >
+          <div class="upload-icon">
+            <i class="pi pi-cloud-upload"></i>
+          </div>
+          <div class="upload-text">
+            <p class="main-text">Drag & Drop the photos and videos</p>
+            <p class="sub-text">
+              or 
+              <label for="fileInput" class="upload-link">click here to upload</label>
+            </p>
+            <input 
+              type="file" 
+              id="fileInput" 
+              multiple 
+              accept="image/jpeg,image/png,image/jpg,video/mp4,video/avi,video/mov,video/wmv,video/flv,video/webm"
+              (change)="onFileSelect($event)"
+              style="display: none;"
+            >
+          </div>
+          <p class="upload-info">(Upload JPEG/PNG files up to 30 MB each)</p>
+        </div>
+  
+        <!-- Rejected Files Alert -->
+        <div *ngIf="rejectedFiles.length > 0" class="rejected-files-alert">
+          <i class="pi pi-exclamation-triangle"></i>
+          <span>{{ rejectedFiles.length }} file(s) were rejected due to validation errors.</span>
+        </div>
+      </div>
+  
+      <!-- Tips Section -->
+      <div class="tips-section">
+        <h3>Tips to Upload Photos & Videos</h3>
+        <div class="tips-content">
+          <div class="tip-item" *ngFor="let tip of uploadTips">
+            <span class="tip-icon">{{ tip.icon }}</span>
+            <span class="tip-text">{{ tip.text }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Uploaded Files Section -->
+    <div *ngIf="uploadedFiles.length > 0" class="uploaded-files-section">
+      <h3>Uploaded Files ({{ this.uploadedFilterValue }}/{{ uploadedFiles.length }})</h3>
+      
+      <form [formGroup]="mediaForm" (ngSubmit)="onSubmit()">
+        <div formArrayName="mediaItems" class="media-items-list">
+          <div 
+            *ngFor="let file of uploadedFiles; let i = index" 
+            class="media-item"
+            [ngClass]="{'uploading': file.uploading, 'error': file.error}"
+          >
+            <!-- File Preview -->
+            <div class="media-preview">
+              <div *ngIf="file.uploading" class="loading-overlay">
+                <i class="pi pi-spin pi-spinner"></i>
+                <span>Uploading...</span>
+              </div>
+              
+              <div *ngIf="file.error" class="error-overlay">
+                <i class="pi pi-exclamation-triangle"></i>
+                <span>{{ file.error }}</span>
+              </div>
+              
+              <img 
+                *ngIf="file.type === 'image' && file.uploaded" 
+                [src]="file.url" 
+                [alt]="file.file.name"
+                class="media-thumbnail"
+              >
+              
+              <div *ngIf="file.type === 'video' && file.uploaded" class="video-thumbnail">
+                <i class="pi pi-play"></i>
+                <span>{{ file.file.name }}</span>
+              </div>
+            </div>
+  
+            <!-- File Details and Controls -->
+            <div *ngIf="file.uploaded" class="media-details" [formGroupName]="i">
+              <div class="file-info">
+                <h4>{{ file.file.name }}</h4>
+                <p>{{ (file.file.size / 1024 / 1024).toFixed(2) }} MB</p>
+              </div>
+  
+              <!-- Tags Multi-Select -->
+              <div class="form-field">
+                <label>Tags *</label>
+                <p-multiSelect
+                  formControlName="tags"
+                  [options]="availableTags"
+                  placeholder="Select or add tags"
+                  [filter]="true"
+                  [showToggleAll]="false"
+                  [showHeader]="false"
+                  styleClass="w-full"
+                >
+                  <ng-template let-option pTemplate="item">
+                    {{ option }}
+                  </ng-template>
+                </p-multiSelect>
+              </div>
+  
+              <!-- Cover Photo Checkbox (Images Only) -->
+              <div *ngIf="file.type === 'image'" class="form-field checkbox-field">
+                <div class="checkbox-container">
+                  <input 
+                    type="checkbox" 
+                    [id]="'coverPhoto_' + i"
+                    formControlName="coverPhoto"
+                    (change)="onCoverPhotoChange(i, $event)"
+                  >
+                  <label [for]="'coverPhoto_' + i">Mark as Cover Photo</label>
+                </div>
+              </div>
+  
+              <!-- Remove Button -->
+              <button type="button" class="remove-btn" (click)="removeFile(i)">
+                <i class="pi pi-trash"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Form Actions -->
+        <div class="form-actions" *ngIf="uploadedFiles">
+          <div class="upload-summary">
+            <p>
+              <strong>{{ getUploadedImages().length }}</strong> photos uploaded
+              <span *ngIf="getUploadedImages().length == validationRules?.minPhotos" class="validation-warning">
+                (Minimum {{ validationRules.minPhotos }} required)
+              </span>
+            </p>
+            <p *ngIf="currentCoverPhotoIndex === null" class="validation-warning">
+              Please select a cover photo
+            </p>
+          </div>
+          
+          <div class="action-buttons">
+            <button type="button" class="btn-back" (click)="onBack()">
+              <i class="pi pi-arrow-left"></i> Back
+            </button>
+            <button 
+              type="submit" 
+              class="btn-primary" 
+              [disabled]="!canSubmit() || isSubmitting"
+            >
+              <span *ngIf="!isSubmitting">Save And Continue</span>
+              <span *ngIf="isSubmitting">
+                <i class="pi pi-spin pi-spinner"></i> Saving...
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  

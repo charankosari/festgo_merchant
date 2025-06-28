@@ -1,0 +1,133 @@
+<div class="basic-info-container" [ngClass]="themeService.isDarkTheme ? 'dark-theme' : 'light-theme'">
+  <div class="form-header">
+    <h1 class="form-title">{{formConfig.sectionTitle}}</h1>
+    <p class="form-subtitle">{{formConfig.sectionSubtitle}}</p>
+  </div>
+
+  <form [formGroup]="propertyForm" (ngSubmit)="onSubmit()" class="property-form">
+    <div class="form-fields">
+      <div *ngFor="let field of formConfig.fields" class="form-field-wrapper" [ngClass]="{'hidden': !shouldShowField(field)}">
+        <div class="form-field" [ngClass]="{'has-error': propertyForm.get(field.key)?.invalid && propertyForm.get(field.key)?.touched}">
+          <div class="field-label-container">
+            <label [for]="field.key" class="field-label">
+              {{field.label}}
+              <span class="required-indicator" *ngIf="field.required">*</span>
+            </label>
+            <span class="field-sublabel" *ngIf="field.subLabel">{{field.subLabel}}</span>
+          </div>
+
+          <!-- Text Input -->
+          <div class="field-input-container" *ngIf="field.type === 'text'">
+            <input 
+              [id]="field.key" 
+              type="text" 
+              [formControlName]="field.key" 
+              [placeholder]="field.placeholder || ''"
+              class="field-input"
+            >
+          </div>
+
+          <!-- Email Input -->
+          <div class="field-input-container" *ngIf="field.type === 'email'">
+            <input 
+              [id]="field.key" 
+              type="email" 
+              [formControlName]="field.key" 
+              [placeholder]="field.placeholder || ''"
+              class="field-input"
+            >
+            <button 
+              *ngIf="field.action" 
+              type="button" 
+              class="field-action-button" 
+              (click)="onActionClick(field)"
+            >
+              {{field.action.label}}
+            </button>
+          </div>
+
+          <!-- Tel Input -->
+          <div class="field-input-container" *ngIf="field.type === 'tel'">
+            <div class="tel-input-group">
+              <span class="tel-prefix" *ngIf="field.prefix">{{field.prefix}}</span>
+              <input 
+                [id]="field.key" 
+                type="tel" 
+                [formControlName]="field.key" 
+                [placeholder]="field.placeholder || ''"
+                class="field-input tel-input"
+              >
+            </div>
+            <button 
+              *ngIf="field.action" 
+              type="button" 
+              class="field-action-button" 
+              (click)="onActionClick(field)"
+            >
+              {{field.action.label}}
+            </button>
+          </div>
+
+          <!-- Dropdown -->
+          <div class="field-input-container" *ngIf="field.type === 'dropdown'">
+            <select 
+              [id]="field.key" 
+              [formControlName]="field.key" 
+              class="field-select"
+            >
+              <option value="" disabled selected>{{field.placeholder || 'Select an option'}}</option>
+              <option *ngFor="let option of field.options" [value]="option">{{option}}</option>
+            </select>
+          </div>
+
+          <!-- Radio Buttons -->
+          <div class="field-input-container" *ngIf="field.type === 'radio'">
+            <div class="radio-group">
+              <div *ngFor="let option of field.options" class="radio-option">
+                <input 
+                  type="radio" 
+                  [id]="field.key + '_' + option" 
+                  [value]="option" 
+                  [formControlName]="field.key"
+                  class="radio-input"
+                >
+                <label [for]="field.key + '_' + option" class="radio-label">{{option}}</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkbox -->
+          <div class="field-input-container" *ngIf="field.type === 'checkbox'">
+            <div class="checkbox-container">
+              <input 
+                type="checkbox" 
+                [id]="field.key" 
+                [formControlName]="field.key"
+                class="checkbox-input"
+              >
+              <label [for]="field.key" class="checkbox-label">{{field.label}}</label>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div class="field-error" *ngIf="propertyForm.get(field.key)?.invalid && propertyForm.get(field.key)?.touched">
+            <span *ngIf="propertyForm.get(field.key)?.errors?.['required']">This field is required</span>
+            <span *ngIf="propertyForm.get(field.key)?.errors?.['email']">Please enter a valid email</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" class="cancel-button" (click)="cancel()">Cancel</button>
+      <!-- <button type="button" class="draft-button" (click)="saveAsDraft()"> -->
+        <!-- <span *ngIf="!isSubmitting">Save as Draft</span> -->
+        <!-- <span *ngIf="isSubmitting">Saving...</span> -->
+      <!-- </button> -->
+      <button type="submit" class="submit-button" [disabled]="isSubmitting">
+        <span *ngIf="!isSubmitting">Save & Continue</span>
+        <span aria-disabled="true" *ngIf="isSubmitting">Saving...</span>
+      </button>
+    </div>
+  </form>
+</div>

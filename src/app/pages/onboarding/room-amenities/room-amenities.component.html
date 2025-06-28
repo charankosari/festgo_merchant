@@ -1,0 +1,116 @@
+<div class="amenities-container">
+    <!-- <div class="form-header">
+      <h2 class="section-title">Amenity Details</h2>
+      <p class="section-subtitle">Select the amenities available in this room to help travellers know what to expect during their stay</p>
+    </div> -->
+  
+    <form [formGroup]="amenitiesForm" (ngSubmit)="onSubmit()">
+      <div class="amenities-layout">
+        <!-- Categories Sidebar -->
+        <div class="categories-sidebar">
+          <div class="categories-list">
+            <div *ngFor="let category of categories" 
+                 class="category-item" 
+                 [class.active]="activeCategory === category.name"
+                 (click)="setActiveCategory(category.name)">
+              <div class="category-content">
+                <span class="category-name">{{ category.name }}</span>
+                <span class="category-count" *ngIf="category.name === 'Mandatory'">15</span>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Amenities Content -->
+        <div class="amenities-content" formArrayName="amenities">
+          <ng-container *ngIf="getActiveCategory() as activeCategory">
+            <div class="amenities-list">
+              <ng-container *ngFor="let amenity of activeCategory.amenities; let i = index">
+                <ng-container *ngIf="getAmenityFormControl(amenity.amenityId) as formControl" [formGroup]="formControl">
+                  <div class="amenity-row">
+                    <!-- Amenity Name and Yes/No Options -->
+                    <div class="amenity-header">
+                      <span class="amenity-name">{{ amenity.otaName }}</span>
+                      <div class="yes-no-options">
+                        <div class="radio-option">
+                          <input 
+                            type="radio" 
+                            [id]="'no_' + amenity.amenityId"
+                            [value]="false"
+                            formControlName="isSelected"
+                            (change)="onAmenitySelectionChange(amenity.amenityId, false)">
+                          <label [for]="'no_' + amenity.amenityId" class="option-label">No</label>
+                        </div>
+                        
+                        <div class="radio-option">
+                          <input 
+                            type="radio" 
+                            [id]="'yes_' + amenity.amenityId"
+                            [value]="true"
+                            formControlName="isSelected"
+                            (change)="onAmenitySelectionChange(amenity.amenityId, true)">
+                          <label [for]="'yes_' + amenity.amenityId" class="option-label">Yes</label>
+                        </div>
+                      </div>
+                    </div>
+  
+                    <!-- Sub-amenities Configuration (shown when Yes is selected) -->
+                    <div class="amenity-config" *ngIf="formControl.get('isSelected')?.value && amenity.subAmenities">
+                      <div class="sub-amenities">
+                        <ng-container *ngIf="amenity.selectType === 'SINGLE_SELECT'">
+                          <div class="sub-amenity-group">
+                            <div *ngFor="let subAmenity of amenity.subAmenities" class="sub-amenity-item">
+                              <input 
+                                type="radio" 
+                                [id]="'sub_' + amenity.amenityId + '_' + subAmenity.mmtCode"
+                                [name]="'sub_amenity_' + amenity.amenityId"
+                                [value]="subAmenity.otaName"
+                                (change)="onSubAmenityChange(amenity, subAmenity, true)">
+                              <label [for]="'sub_' + amenity.amenityId + '_' + subAmenity.mmtCode" class="sub-amenity-label">
+                                {{ subAmenity.otaName }}
+                              </label>
+                            </div>
+                          </div>
+                        </ng-container>
+  
+                        <ng-container *ngIf="amenity.selectType === 'MULTI_SELECT'">
+                          <div class="sub-amenity-group">
+                            <div *ngFor="let subAmenity of amenity.subAmenities" class="sub-amenity-item">
+                              <input 
+                                type="checkbox" 
+                                [id]="'sub_' + amenity.amenityId + '_' + subAmenity.mmtCode"
+                                [checked]="isSubAmenitySelected(amenity, subAmenity)"
+                                (change)="onSubAmenityChange(amenity, subAmenity, $any($event.target).checked)">
+                              <label [for]="'sub_' + amenity.amenityId + '_' + subAmenity.mmtCode" class="sub-amenity-label">
+                                {{ subAmenity.otaName }}
+                              </label>
+                            </div>
+                          </div>
+                        </ng-container>
+                      </div>
+                    </div>
+                  </div>
+                </ng-container>
+              </ng-container>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+  
+      <!-- Form Actions -->
+      <div class="form-actions">
+        <button 
+          type="button" 
+          class="btn btn-secondary"
+          (click)="onCancel()">
+          Cancel
+        </button>
+        <button 
+          type="submit" 
+          class="btn btn-primary">
+          Save Amenities
+        </button>
+      </div>
+    </form>
+  </div>
+  

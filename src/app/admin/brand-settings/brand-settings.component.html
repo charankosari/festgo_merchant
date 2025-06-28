@@ -1,0 +1,184 @@
+<app-layout pageTitle="Branding Settings" activeMenuItem="settings">
+  <div class="admin-settings-container">
+    <div class="settings-card">
+      <div class="settings-header">
+        <h2 class="settings-title">Whitelabel Configuration</h2>
+        <div class="settings-actions">
+          <button type="button" class="btn btn-outline" (click)="resetToDefaults()">Reset to Defaults</button>
+        </div>
+      </div>
+      
+      <form [formGroup]="brandingForm" (ngSubmit)="onSubmit()" class="settings-form">
+        <!-- Company/Product Information -->
+        <div class="form-section">
+          <h3 class="section-title">Company Information</h3>
+          
+          <div class="form-field">
+            <label for="companyName">Company Name</label>
+            <input id="companyName" type="text" formControlName="companyName" 
+                  [ngClass]="{'invalid': brandingForm.get('companyName')?.invalid && brandingForm.get('companyName')?.touched}">
+            <small *ngIf="brandingForm.get('companyName')?.invalid && brandingForm.get('companyName')?.touched" class="error-message">
+              Company name is required
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="productName">Product Name</label>
+            <input id="productName" type="text" formControlName="productName" 
+                  [ngClass]="{'invalid': brandingForm.get('productName')?.invalid && brandingForm.get('productName')?.touched}">
+            <small *ngIf="brandingForm.get('productName')?.invalid && brandingForm.get('productName')?.touched" class="error-message">
+              Product name is required
+            </small>
+          </div>
+        </div>
+        
+        <!-- Logo Configuration -->
+        <div class="form-section">
+          <h3 class="section-title">Logo Configuration</h3>
+          
+          <div class="form-field">
+            <label for="logoType">Logo Type</label>
+            <select id="logoType" formControlName="logoType" class="form-select">
+              <option value="text">Text Only</option>
+              <option value="image">Image Only</option>
+              <option value="both">Both Text and Image</option>
+            </select>
+          </div>
+          
+          <div class="form-field" *ngIf="brandingForm.get('logoType')?.value !== 'image'">
+            <label for="logoText">Logo Text</label>
+            <input id="logoText" type="text" formControlName="logoText">
+          </div>
+          
+          <div class="form-field" *ngIf="brandingForm.get('logoType')?.value !== 'text'">
+            <label for="logoImageUrl">Logo Image URL</label>
+            <input id="logoImageUrl" type="text" formControlName="logoImageUrl">
+          </div>
+          
+          <div class="form-field" *ngIf="brandingForm.get('logoType')?.value !== 'text'">
+            <label for="logoImageAlt">Logo Image Alt Text</label>
+            <input id="logoImageAlt" type="text" formControlName="logoImageAlt">
+          </div>
+          
+          <div class="form-field">
+            <label for="favicon">Favicon URL</label>
+            <input id="favicon" type="text" formControlName="favicon">
+          </div>
+        </div>
+        
+        <!-- Color Scheme -->
+        <div class="form-section">
+          <h3 class="section-title">Color Scheme</h3>
+          
+          <div class="form-field">
+            <label for="primaryColor">Primary Color</label>
+            <div class="color-picker-container">
+              <div class="color-preview" [style.background-color]="brandingForm.get('primaryColor')?.value"></div>
+              <input id="primaryColor" type="text" formControlName="primaryColor" 
+                    [ngClass]="{'invalid': brandingForm.get('primaryColor')?.invalid && brandingForm.get('primaryColor')?.touched}">
+            </div>
+            <small *ngIf="brandingForm.get('primaryColor')?.invalid && brandingForm.get('primaryColor')?.touched" class="error-message">
+              Please enter a valid hex color code (e.g., #f05a29)
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="secondaryColor">Secondary Color</label>
+            <div class="color-picker-container">
+              <div class="color-preview" [style.background-color]="brandingForm.get('secondaryColor')?.value"></div>
+              <input id="secondaryColor" type="text" formControlName="secondaryColor" 
+                    [ngClass]="{'invalid': brandingForm.get('secondaryColor')?.invalid && brandingForm.get('secondaryColor')?.touched}">
+            </div>
+            <small *ngIf="brandingForm.get('secondaryColor')?.invalid && brandingForm.get('secondaryColor')?.touched" class="error-message">
+              Please enter a valid hex color code (e.g., #4a4a4a)
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="accentColor">Accent Color</label>
+            <div class="color-picker-container">
+              <div class="color-preview" [style.background-color]="brandingForm.get('accentColor')?.value"></div>
+              <input id="accentColor" type="text" formControlName="accentColor" 
+                    [ngClass]="{'invalid': brandingForm.get('accentColor')?.invalid && brandingForm.get('accentColor')?.touched}">
+            </div>
+            <small *ngIf="brandingForm.get('accentColor')?.invalid && brandingForm.get('accentColor')?.touched" class="error-message">
+              Please enter a valid hex color code (e.g., #304c8e)
+            </small>
+          </div>
+        </div>
+        
+        <!-- Login/Auth Screen -->
+        <div class="form-section">
+          <h3 class="section-title">Login Screen</h3>
+          
+          <div class="form-field">
+            <label for="loginBackgroundColor">Login Background Color</label>
+            <div class="color-picker-container">
+              <div class="color-preview" [style.background-color]="brandingForm.get('loginBackgroundColor')?.value"></div>
+              <input id="loginBackgroundColor" type="text" formControlName="loginBackgroundColor" 
+                    [ngClass]="{'invalid': brandingForm.get('loginBackgroundColor')?.invalid && brandingForm.get('loginBackgroundColor')?.touched}">
+            </div>
+            <small *ngIf="brandingForm.get('loginBackgroundColor')?.invalid && brandingForm.get('loginBackgroundColor')?.touched" class="error-message">
+              Please enter a valid hex color code (e.g., #0a2647)
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="loginWelcomeText">Login Welcome Text</label>
+            <input id="loginWelcomeText" type="text" formControlName="loginWelcomeText" 
+                  [ngClass]="{'invalid': brandingForm.get('loginWelcomeText')?.invalid && brandingForm.get('loginWelcomeText')?.touched}">
+            <small *ngIf="brandingForm.get('loginWelcomeText')?.invalid && brandingForm.get('loginWelcomeText')?.touched" class="error-message">
+              Welcome text is required
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="loginSubText">Login Subtitle Text</label>
+            <textarea id="loginSubText" formControlName="loginSubText" rows="3" 
+                     [ngClass]="{'invalid': brandingForm.get('loginSubText')?.invalid && brandingForm.get('loginSubText')?.touched}"></textarea>
+            <small *ngIf="brandingForm.get('loginSubText')?.invalid && brandingForm.get('loginSubText')?.touched" class="error-message">
+              Subtitle text is required
+            </small>
+          </div>
+        </div>
+        
+        <!-- Additional Branding -->
+        <div class="form-section">
+          <h3 class="section-title">Additional Branding</h3>
+          
+          <div class="form-field">
+            <label for="footerText">Footer Text</label>
+            <input id="footerText" type="text" formControlName="footerText">
+          </div>
+          
+          <div class="form-field">
+            <label for="copyrightText">Copyright Text</label>
+            <input id="copyrightText" type="text" formControlName="copyrightText">
+          </div>
+          
+          <div class="form-field">
+            <label for="supportEmail">Support Email</label>
+            <input id="supportEmail" type="email" formControlName="supportEmail" 
+                  [ngClass]="{'invalid': brandingForm.get('supportEmail')?.invalid && brandingForm.get('supportEmail')?.touched}">
+            <small *ngIf="brandingForm.get('supportEmail')?.invalid && brandingForm.get('supportEmail')?.touched" class="error-message">
+              Please enter a valid email address
+            </small>
+          </div>
+          
+          <div class="form-field">
+            <label for="supportPhone">Support Phone</label>
+            <input id="supportPhone" type="text" formControlName="supportPhone">
+          </div>
+        </div>
+        
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="brandingForm.invalid || isSubmitting">
+            <span *ngIf="!isSubmitting">Save Changes</span>
+            <span *ngIf="isSubmitting">Saving...</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-layout>

@@ -1,0 +1,16 @@
+<div class="logo-container" [ngClass]="logoSizeClass">
+  <ng-container *ngIf="(config$ | async) as config">
+    <!-- Default Logo -->
+    <ng-container *ngIf="config.logoType === 'default'">
+      <div class="logo">
+        <img src="" alt="">
+      </div>
+      <span class="logo-text">{{config.companyName}}</span>
+    </ng-container>
+    
+    <!-- Custom Logo -->
+    <ng-container *ngIf="config.logoType === 'custom' && config.logoUrl">
+      <img [src]="config.logoUrl" [alt]="config.companyName + ' logo'" class="custom-logo">
+    </ng-container>
+  </ng-container>
+</div>

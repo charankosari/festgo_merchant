@@ -1,0 +1,202 @@
+<app-layout activeMenuItem="properties">
+  <!-- Back Button -->
+  <div class="back-button-container mt-1" style="display: flex; justify-content: end;">
+    <button class="back-button" (click)="goBack()">
+      <i class="pi pi-arrow-left"></i> Back
+    </button>
+  </div>
+
+  <!-- Profile Banner -->
+  <!-- <div class="profile-banner">
+    <img src="assets/images/profile-banner.jpg" alt="Profile banner">
+  </div> -->
+
+  <!-- Profile Header -->
+  <div class="profile-header">
+    <div class="profile-avatar">
+      <span>{{displayInitials}}</span>
+    </div>
+    <div class="profile-info">
+      <h1 class="profile-name">{{userProfile.firstName}}</h1>
+      <p class="profile-title">{{userProfile.designation}}</p>
+    </div>
+  </div>
+
+  <!-- Profile Tabs -->
+  <div class="profile-tabs">
+    <div class="tab" [class.active]="activeTab === 'profile'" (click)="setActiveTab('profile')">
+      Profile
+    </div>
+    <div class="tab" [class.active]="activeTab === 'permissions'" (click)="setActiveTab('permissions')">
+      Permissions
+    </div>
+    <div class="tab" [class.active]="activeTab === 'assignedProperties'" (click)="setActiveTab('assignedProperties')">
+      Assigned Properties
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner">
+      <i class="pi pi-spin pi-spinner"></i>
+      <p>Loading profile...</p>
+    </div>
+  </div>
+
+  <!-- Profile Content -->
+  <div class="profile-content" [class.loading]="isLoading">
+    <!-- Profile Tab -->
+    <div *ngIf="activeTab === 'profile'" class="tab-pane">
+      <div class="personal-details-card">
+        <div class="card-header">
+          <h2>Personal Details</h2>
+          <div class="header-actions">
+            <!-- View Mode Actions -->
+            <ng-container *ngIf="!isEditMode">
+              <button class="edit-button" (click)="editProfile()">
+                <i class="pi pi-pencil"></i>
+                Edit
+              </button>
+            </ng-container>
+            
+            <!-- Edit Mode Actions -->
+            <ng-container *ngIf="isEditMode">
+              <button 
+                class="cancel-button" 
+                (click)="cancelEdit()"
+                [disabled]="isSaving">
+                <i class="pi pi-times"></i>
+                Cancel
+              </button>
+              <button 
+                class="save-button" 
+                (click)="saveProfile()"
+                [disabled]="!isFormValid || isSaving"
+                [class.loading]="isSaving">
+                <i class="pi" [class.pi-check]="!isSaving" [class.pi-spin]="isSaving" [class.pi-spinner]="isSaving"></i>
+                {{isSaving ? 'Saving...' : 'Save'}}
+              </button>
+            </ng-container>
+          </div>
+        </div>
+
+        <div class="card-content">
+          <!-- View Mode -->
+          <div *ngIf="!isEditMode" class="details-grid">
+            <div class="detail-item">
+              <label>USER NAME</label>
+              <p>{{userData.username}}</p>
+            </div>
+            <!-- <div class="detail-item">
+              <label>LAST NAME</label>
+              <p [class.not-added]="!userProfile.lastName">
+                {{userProfile.lastName || 'Not added'}}
+              </p>
+            </div> -->
+            <div class="detail-item">
+              <label>MOBILE NUMBER</label>
+              <p [class.not-added]="!userData.number">
+                {{userData.number || 'Not added'}}
+              </p>
+            </div>
+            <!-- <div class="detail-item">
+              <label>WHATSAPP NUMBER</label>
+              <p [class.not-added]="!userProfile.whatsappNumber">
+                {{userProfile.whatsappNumber || 'Not added'}}
+              </p>
+            </div> -->
+            <div class="detail-item">
+              <label>EMAIL ID</label>
+              <p>
+                {{userData.email}}
+                <i *ngIf="userData.email_verified" class="pi pi-check-circle verified-icon"></i>
+              </p>
+            </div>
+            <div class="detail-item">
+              <label>ROLE</label>
+              <p>{{userData.role}}</p>
+            </div>
+          </div>
+
+          <!-- Edit Mode -->
+          <form *ngIf="isEditMode" [formGroup]="profileForm" class="edit-form">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstName">USER NAME *</label>
+                <input 
+                  id="firstName"
+                  type="text" 
+                  formControlName="username"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('firstName')"
+                  placeholder="Enter first name">
+                <div *ngIf="getFieldError('firstName')" class="error-message">
+                  {{getFieldError('firstName')}}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="mobileNumber">MOBILE NUMBER</label>
+                <input 
+                  id="mobileNumber"
+                  type="tel" 
+                  formControlName="number"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('mobileNumber')"
+                  placeholder="Enter 10-digit mobile number">
+                <div *ngIf="getFieldError('mobileNumber')" class="error-message">
+                  {{getFieldError('mobileNumber')}}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>EMAIL ID</label>
+                <div class="readonly-field">
+                  <span>{{userProfile.emailId}}</span>
+                  <i *ngIf="userProfile.isEmailVerified" class="pi pi-check-circle verified-icon"></i>
+                </div>
+                <small class="field-note">Email cannot be changed</small>
+              </div>
+
+              <div class="form-group">
+                <label>ROLE</label>
+                <div class="readonly-field">
+                  <span>{{userProfile.role}}</span>
+                </div>
+                <small class="field-note">Role cannot be changed</small>
+              </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+              <div class="form-status">
+                <span *ngIf="hasUnsavedChanges" class="unsaved-indicator">
+                  <i class="pi pi-circle-fill"></i>
+                  Unsaved changes
+                </span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Permissions Tab -->
+    <div *ngIf="activeTab === 'permissions'" class="tab-pane">
+      <div class="empty-tab">
+        <i class="pi pi-lock"></i>
+        <h3>Permissions</h3>
+        <p>This section will display user permissions and access rights.</p>
+      </div>
+    </div>
+
+    <!-- Assigned Properties Tab -->
+    <div *ngIf="activeTab === 'assignedProperties'" class="tab-pane">
+      <div class="empty-tab">
+        <i class="pi pi-home"></i>
+        <h3>Assigned Properties</h3>
+        <p>This section will display properties assigned to this user.</p>
+      </div>
+    </div>
+  </div>
+</app-layout>

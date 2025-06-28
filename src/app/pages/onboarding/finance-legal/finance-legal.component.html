@@ -1,0 +1,286 @@
+<div class="finance-legal-container">
+  <h1 class="section-title">{{ formSchema.sectionTitle }}</h1>
+  <p class="section-subtitle">{{ formSchema.sectionSubtitle }}</p>
+
+  <form [formGroup]="financeLegalForm">
+    <!-- Ownership Details Section -->
+    <div class="form-section ownership-details">
+      <div class="section-header">
+        <h2 *ngIf="!editingOwnership">Ownership Details <span class="completed-icon">✓</span></h2>
+        <button type="button" class="edit-button" *ngIf="!editingOwnership" (click)="toggleEditOwnership()">Edit</button>
+      </div>
+
+      <!-- Display mode - when not editing -->
+      <div class="details-grid" formGroupName="ownershipDetails" *ngIf="!editingOwnership">
+        <div class="detail-row">
+          <div class="detail-label">Ownership Type</div>
+          <p *ngIf="editingOwnership"class="section-subtitle">{{ ownershipSchema.sectionSubtitle }}</p>
+          <div class="detail-value">{{ formSchema.ownershipDetails.ownershipType }}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Ownership Document</div>
+          <div class="detail-value">{{ formSchema.ownershipDetails.ownershipDocument }}</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Document Uploaded?</div>
+          <div class="detail-value">{{ formSchema.ownershipDetails.documentUploaded }}</div>
+        </div>
+      </div>
+
+      <!-- Edit mode - when editing ownership details -->
+      <div class="ownership-edit-form" *ngIf="editingOwnership" [formGroup]="ownershipForm">
+        <div class="form-section-inner shadow-sm">
+          <h3>{{ ownershipSchema.sectionTitle }}</h3>
+          <p class="section-subtitle">{{ ownershipSchema.sectionSubtitle }}</p>
+
+          <!-- Ownership Type Selection -->
+          <div class="form-group">
+            <h4>{{ ownershipSchema.ownershipTypeQuestion }}</h4>
+            <p class="field-label">{{ ownershipSchema.ownershipTypeLabel }}</p>
+            <div class="select-wrapper">
+              <select formControlName="ownershipType" class="form-control">
+                <option *ngFor="let type of ownershipSchema.ownershipTypes" [value]="type">{{ type }}</option>
+              </select>
+              <div class="select-arrow">▼</div>
+            </div>
+          </div>
+
+          <!-- Document Upload Section -->
+          <div class="form-group">
+            <h4>{{ ownershipSchema.documentUploadTitle }}</h4>
+            <p class="field-subtitle">{{ ownershipSchema.documentUploadSubtitle }}</p>
+            
+            <div class="property-address">
+              <span class="location-icon">📍</span>
+              <span class="address-label">{{ ownershipSchema.propertyAddressLabel }}</span>
+              <span class="address-value">{{ propertyAddress }}</span>
+            </div>
+
+            <div 
+              class="drop-zone" 
+              (dragover)="onDragOver($event)" 
+              (dragleave)="onDragLeave($event)" 
+              (drop)="onDrop($event)"
+            >
+              <div class="drop-zone-content">
+                <div class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 16V8M12 8L8 12M12 8L16 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M3 15V16C3 18.2091 4.79086 20 7 20H17C19.2091 20 21 18.2091 21 16V15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="drop-text">{{ ownershipSchema.dragDropText }}</div>
+                <div class="or-text">or</div>
+                <div class="click-here">
+                  <label for="file-upload" class="click-here-link">{{ ownershipSchema.clickHereText }}</label>
+                  <input 
+                    id="file-upload" 
+                    type="file" 
+                    accept=".pdf,.png,.jpg,.jpeg" 
+                    style="display: none;" 
+                    (change)="onFileSelected($event)"
+                  >
+                </div>
+                <div class="upload-info">{{ ownershipSchema.uploadInfoText }}</div>
+                <div class="selected-file" *ngIf="selectedFile">
+                  Selected file: {{ selectedFile.name }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Button for Ownership Form -->
+          <div class="form-action ownership-actions">
+            <button type="button" class="btn-secondary" (click)="toggleEditOwnership()">Cancel</button>
+            <button type="button" class="btn-primary" (click)="saveOwnershipDetails()">
+              {{ ownershipSchema.saveButtonText }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banking Details Section -->
+    <div class="form-section banking-details" *ngIf="!editingOwnership">
+      <h2>{{ formSchema.bankingDetails.title }}</h2>
+      <p class="section-subtitle">{{ formSchema.bankingDetails.subtitle }}</p>
+    </div>
+
+    <!-- Bank Details Section -->
+    <div class="form-section bank-details" formGroupName="bankDetails" *ngIf="!editingOwnership">
+      <h2>{{ formSchema.bankDetails.title }}</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="accountNumber">{{ formSchema.bankDetails.fields.accountNumber.label }}</label>
+          <input 
+            type="text" 
+            id="accountNumber" 
+            formControlName="accountNumber" 
+            placeholder="{{ formSchema.bankDetails.fields.accountNumber.placeholder }}"
+            class="form-control"
+          >
+          <div class="error-message" *ngIf="financeLegalForm.get('bankDetails.accountNumber')?.touched && financeLegalForm.get('bankDetails.accountNumber')?.errors?.['required']">
+            Account number is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="reEnterAccountNumber">{{ formSchema.bankDetails.fields.reEnterAccountNumber.label }}</label>
+          <input 
+            type="text" 
+            id="reEnterAccountNumber" 
+            formControlName="reEnterAccountNumber" 
+            placeholder="{{ formSchema.bankDetails.fields.reEnterAccountNumber.placeholder }}"
+            class="form-control"
+          >
+          <div class="error-message" *ngIf="financeLegalForm.get('bankDetails.reEnterAccountNumber')?.touched && financeLegalForm.get('bankDetails.reEnterAccountNumber')?.errors?.['required']">
+            Please re-enter account number
+          </div>
+          <div class="error-message" *ngIf="financeLegalForm.get('bankDetails.reEnterAccountNumber')?.touched && financeLegalForm.get('bankDetails.reEnterAccountNumber')?.errors?.['mismatch']">
+            Account numbers do not match
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="ifscCode">{{ formSchema.bankDetails.fields.ifscCode.label }}</label>
+          <input 
+            type="text" 
+            id="ifscCode" 
+            formControlName="ifscCode" 
+            placeholder="{{ formSchema.bankDetails.fields.ifscCode.placeholder }}"
+            class="form-control"
+          >
+          <div class="error-message" *ngIf="financeLegalForm.get('bankDetails.ifscCode')?.touched && financeLegalForm.get('bankDetails.ifscCode')?.errors?.['required']">
+            IFSC code is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="bankName">{{ formSchema.bankDetails.fields.bankName.label }}</label>
+          <div class="select-wrapper">
+            <select 
+              id="bankName" 
+              formControlName="bankName" 
+              class="form-control"
+            >
+              <option value="" disabled selected>{{ formSchema.bankDetails.fields.bankName.placeholder }}</option>
+              <option *ngFor="let bank of formSchema.bankDetails.fields.bankName.options" [value]="bank">
+                {{ bank }}
+              </option>
+            </select>
+            <div class="select-arrow">▼</div>
+          </div>
+          <div class="error-message" *ngIf="financeLegalForm.get('bankDetails.bankName')?.touched && financeLegalForm.get('bankDetails.bankName')?.errors?.['required']">
+            Bank name is required
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tax Details Section -->
+    <div class="form-section tax-details" formGroupName="taxDetails" *ngIf="!editingOwnership">
+      <!-- GSTIN Section -->
+      <div class="toggle-section d-flex justify-content-between">
+        <div class="toggle-question">{{ formSchema.taxDetails.gstinQuestion }}</div>
+        <div class="toggle-buttons">
+          <label class="toggle-option" [class.selected]="!financeLegalForm.get('taxDetails.hasGSTIN')?.value">
+            <input type="radio" [value]="false" formControlName="hasGSTIN">
+            <span class="toggle-label">No</span>
+          </label>
+          <label class="toggle-option" [class.selected]="financeLegalForm.get('taxDetails.hasGSTIN')?.value">
+            <input type="radio" [value]="true" formControlName="hasGSTIN">
+            <span class="toggle-label">Yes</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="financeLegalForm.get('taxDetails.hasGSTIN')?.value">
+        <div class="form-group">
+          <label for="gstin">{{ formSchema.taxDetails.gstinField.label }}</label>
+          <input 
+            type="text" 
+            id="gstin" 
+            formControlName="gstin" 
+            placeholder="{{ formSchema.taxDetails.gstinField.placeholder }}"
+            class="form-control"
+          >
+          <div class="error-message" *ngIf="financeLegalForm.get('taxDetails.gstin')?.touched && financeLegalForm.get('taxDetails.gstin')?.errors?.['required']">
+            GSTIN is required
+          </div>
+          <div class="error-message" *ngIf="financeLegalForm.get('taxDetails.gstin')?.touched && financeLegalForm.get('taxDetails.gstin')?.errors?.['pattern']">
+            Please enter a valid GSTIN
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pan">{{ formSchema.taxDetails.panField.label }}</label>
+          <input 
+            type="text" 
+            id="pan" 
+            formControlName="pan" 
+            placeholder="{{ formSchema.taxDetails.panField.placeholder }}"
+            class="form-control"
+            readonly
+          >
+        </div>
+      </div>
+
+      <!-- TAN Section -->
+      <div class="toggle-section d-flex justify-content-between">
+        <div class="toggle-question">{{ formSchema.taxDetails.tanQuestion }}</div>
+        <div class="toggle-buttons">
+          <label class="toggle-option" [class.selected]="!financeLegalForm.get('taxDetails.hasTAN')?.value">
+            <input type="radio" [value]="false" formControlName="hasTAN">
+            <span class="toggle-label">No</span>
+          </label>
+          <label class="toggle-option" [class.selected]="financeLegalForm.get('taxDetails.hasTAN')?.value">
+            <input type="radio" [value]="true" formControlName="hasTAN">
+            <span class="toggle-label">Yes</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row" *ngIf="financeLegalForm.get('taxDetails.hasTAN')?.value">
+        <div class="form-group full-width">
+          <label for="tan">{{ formSchema.taxDetails.tanField.label }}</label>
+          <input 
+            type="text" 
+            id="tan" 
+            formControlName="tan" 
+            placeholder="{{ formSchema.taxDetails.tanField.placeholder }}"
+            class="form-control"
+          >
+          <div class="error-message" *ngIf="financeLegalForm.get('taxDetails.tan')?.touched && financeLegalForm.get('taxDetails.tan')?.errors?.['required']">
+            TAN is required
+          </div>
+          <div class="error-message" *ngIf="financeLegalForm.get('taxDetails.tan')?.touched && financeLegalForm.get('taxDetails.tan')?.errors?.['pattern']">
+            Please enter a valid TAN
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Consent Checkbox -->
+    <div class="form-section consent-section" *ngIf="!editingOwnership">
+      <div class="form-group">
+        <label class="checkbox-container">
+          <input type="checkbox" formControlName="consent">
+          <span class="checkmark"></span>
+          <span class="consent-text">{{ formSchema.consentText }}</span>
+        </label>
+        <div class="error-message" *ngIf="financeLegalForm.get('consent')?.touched && financeLegalForm.get('consent')?.errors?.['required']">
+          You must give consent to proceed
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button type="button" class="btn-back " (click)="navigateBack()"><i class="pi pi-arrow-left"></i>Back</button>
+      <button type="submit" (click)="onSubmit()" class="btn-primary">Save</button>
+    </div>
+  </form>
+</div>
